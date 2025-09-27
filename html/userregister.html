@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/userregister.css">
+    <title>register</title>
+    <style>
+        .bus-status {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .available {
+            color: green;
+        }
+        .full {
+            color: red;
+        }
+        .capacity-info {
+            font-style: italic;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+        .bus-option-disabled {
+            color: #888;
+            background-color: #f0f0f0;
+        }
+
+        input[readonly] {
+        background-color: #f0f0f0;
+        cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+   <nav>
+      <div id="img">
+          <img src="../assets/clogo.png" alt="Sample Image">
+      </div>
+      <div class="logo">
+          College of Engineering Cherthala
+      </div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+          <li><a class="active" href="{{ url_for('user_home') }}">Home</a></li>
+          <li><a href="{{ url_for('busdetail') }}">Bus Details</a></li>
+          <li><a href="{{ url_for('userregister') }}">Register</a></li>
+          <li><a href="{{ url_for('buspass') }}">Bus Pass</a></li>
+          <li class="profile">
+              <div class="profile-container">
+                  <button class="profile-button">
+                      <i class="fas fa-user"></i>
+                  </button>
+                  <div class="dropdown-content">
+                      <a href="{{ url_for('profile') }}">
+                          <i class="far fa-user"></i>
+                          Profile
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a href="{{ url_for('logout') }}">
+                          <i class="fas fa-sign-out-alt"></i>
+                          Logout
+                      </a>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </nav>
+
+  <div class="img2">
+    <video width="400" height="400" autoplay muted loop>
+        <source src="../assets/CEC (1).mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="box">
+    <form id="registerForm" action="/register-bus-student" method="POST" enctype="multipart/form-data">
+        <h2>Register</h2>
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Enter your Full Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="sid">Student Id</label>
+            <input type="text" id="sid" name="sid" placeholder="Enter your Student Id" required>
+        </div>
+        <div class="form-group">
+            <label for="semester" style="font-size: 12px;">Semester</label>
+            <select id="semester" name="semester" required>
+                <option value="">Select your semester</option>
+                <option value="Semester 1">Semester 1</option>
+                <option value="Semester 2">Semester 2</option>
+                <option value="Semester 3">Semester 3</option>
+                <option value="Semester 4">Semester 4</option>
+                <option value="Semester 5">Semester 5</option>
+                <option value="Semester 6">Semester 6</option>
+                <option value="Semester 7">Semester 7</option>
+                <option value="Semester 8">Semester 8</option>
+            </select>
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 15px;">
+            <label for="gender">Gender</label>
+            
+            <input type="radio" id="male" name="gender" value="Male" required>
+            <label for="male">Male</label>
+        
+            <input type="radio" id="female" name="gender" value="Female">
+            <label for="female">Female</label>
+        
+            <input type="radio" id="other" name="gender" value="Other">
+            <label for="other">Other</label>
+        </div>
+
+        <div class="form-group">
+            <label for="bus" style="font-size: 12px;">Bus No.</label>
+            <select id="bus" name="bus" required>
+                <option value="">Select your bus</option>
+                <option value="Bus 1 (MEC)">Bus 1 (MEC)</option>
+                <option value="Bus 2 (Thoppumpady)">Bus 2 (Thoppumpady)</option>
+                <option value="Bus 3 (Alappuzha)">Bus 3 (Alappuzha)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="bp" style="font-size: 12px;">Boarding Point</label>
+            <select id="bp" name="bp" required>
+                <option value="">Select your boarding point</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="eid">Email Id</label>
+            <input type="email" id="eid" name="eid" placeholder="Enter your Email Id" required>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount ₹</label>
+            <input type="text" id="amount" name="amount" placeholder="Your Bus fare" required readonly>
+        </div>
+
+        <div class="upload-container">
+            <label for="fileUpload" class="upload-box" id="uploadBox">
+                <span id="uploadText">Upload Photo</span>
+                <input type="file" id="fileUpload" name="photo" accept="image/*" onchange="previewImage(event)" required>
+                <img id="imagePreview" src="" alt="Image Preview">
+            </label>
+        </div>
+
+        <button type="button" id="register-button" onclick="payNow()" class="black-theme-button">Register & Pay</button>
+    </form>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    // Image preview function
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const imgElement = document.getElementById("imagePreview");
+            const uploadBox = document.getElementById("uploadBox");
+            const uploadText = document.getElementById("uploadText");
+
+            imgElement.src = reader.result;
+            imgElement.style.display = "block"; 
+            uploadBox.classList.add("active"); 
+            uploadText.style.display = "none"; 
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+    
+    // Pay Now function
+    function payNow() {
+        // Validate form first
+        const form = document.getElementById("registerForm");
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        // Check if selected bus is full
+        const busSelect = document.getElementById("bus");
+        const selectedBus = busSelect.value;
+        if (selectedBus) {
+            // Check bus capacity before proceeding
+            fetch(`/api/bus-capacity/${selectedBus}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.is_available) {
+                        alert(`Sorry, Bus ${selectedBus.replace('bus', '')} is already full. Please select another bus.`);
+                        return;
+                    }
+                    // If bus is available, proceed with registration
+                    proceedWithPayment();
+                })
+                .catch(error => {
+                    console.error("Error checking bus capacity:", error);
+                    alert("Error checking bus availability. Please try again.");
+                });
+        } else {
+            alert("Please select a bus.");
+        }
+    }
+
+    function showLoader() {
+        const overlay = document.createElement('div');
+        overlay.id = 'payment-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.zIndex = '9999';
+        
+        const loaderContainer = document.createElement('div');
+        loaderContainer.innerHTML = `
+        <div class="push-pop">
+            <div></div>
+            <div></div>
+        </div>
+        `;
+        
+        const styleTag = document.createElement('style');
+        styleTag.textContent = `
+        :root {
+            --primary: #3498db;
+        }
+        
+        .push-pop {
+            --duration: .85;
+            height: 100px;
+            width: 100px;
+            position: relative;
+            overflow: hidden; 
+        }
+        .push-pop > div:nth-of-type(1) {
+            height: 20px;
+            width: 20px;
+            position: absolute;
+            animation: push-pop-slide calc(var(--duration) * 1s) infinite alternate ease-in-out;
+            transform: translate(0, -100%);
+            top: 100%;
+            left: 0; 
+        }
+        .push-pop > div:nth-of-type(1):after {
+            animation: push-pop-flip calc(var(--duration) * 1s) infinite alternate ease-in-out;
+            background: var(--primary);
+            content: '';
+            height: 100%;
+            position: absolute;
+            width: 100%; 
+        }
+        .push-pop > div:nth-of-type(2) {
+            background: var(--primary);
+            height: 30px;
+            left: 50%;
+            position: absolute;
+            top: 100%;
+            transform: translate(-50%, -100%);
+            width: 20px; 
+        }
+        .push-pop:after, .push-pop:before {
+            animation-name: push-pop-pushed;
+            animation-duration: calc(var(--duration) * 1s);
+            animation-iteration-count: infinite;
+            animation-timing-function: ease;
+            background: var(--primary);
+            bottom: 0;
+            content: '';
+            height: 40px;
+            position: absolute;
+            width: 20px; 
+        }
+        .push-pop:before {
+            animation-direction: alternate-reverse;
+            left: 0; 
+        }
+        .push-pop:after {
+            animation-direction: alternate;
+            right: 0; 
+        }
+    
+        @keyframes push-pop-pushed {
+            0%, 72.5% {
+                transform: translate(0, 0); 
+            }
+            100% {
+                transform: translate(0, 100%); 
+            } 
+        }
+    
+        @keyframes push-pop-flip {
+            0% {
+                transform: translate(0, 0) rotate(0deg); 
+            }
+            50% {
+                transform: translate(0, -80px) rotate(90deg); 
+            }
+            100% {
+                transform: translate(0, 0) rotate(180deg); 
+            } 
+        }
+    
+        @keyframes push-pop-slide {
+            to {
+                transform: translate(0, -100%) translate(80px, 0); 
+            } 
+        }
+        `;
+        
+        loaderContainer.appendChild(styleTag);
+        overlay.appendChild(loaderContainer);
+        
+        document.body.appendChild(overlay);
+        
+        return overlay;
+    }
+    
+    function hideLoader() {
+        const overlay = document.getElementById('payment-overlay');
+        if (overlay) {
+            document.body.removeChild(overlay);
+        }
+    }
+
+    function proceedWithPayment() {
+    const formData = new FormData(document.getElementById("registerForm"));
+
+    // Create loader and overlay
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '9999';
+
+    // Create loader container
+    const loaderContainer = document.createElement('div');
+    loaderContainer.style.textAlign = 'center';
+
+    // Create loader (from test2.html)
+    const loader = document.createElement('div');
+    loader.className = 'push-pop';
+    loader.innerHTML = `
+    <div></div>
+    <div></div>
+    `;
+
+    // Create loading text
+    const loadingText = document.createElement('p');
+    loadingText.textContent = 'Processing Payment...';
+    loadingText.style.color = 'white';
+    loadingText.style.marginTop = '20px';
+
+    // Assemble loader container
+    loaderContainer.appendChild(loader);
+    loaderContainer.appendChild(loadingText);
+    overlay.appendChild(loaderContainer);
+
+    // Add styles for loader from test2.html
+    const loaderStyle = document.createElement('style');
+    loaderStyle.textContent = `
+    .push-pop {
+    --duration: .85;
+    height: 100px;
+    width: 100px;
+    position: relative;
+    overflow: hidden;
+    }
+    .push-pop > div:nth-of-type(1) {
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    animation: push-pop-slide calc(var(--duration) * 1s) infinite alternate ease-in-out;
+    transform: translate(0, -100%);
+    top: 100%;
+    left: 0;
+    }
+    .push-pop > div:nth-of-type(1):after {
+    animation: push-pop-flip calc(var(--duration) * 1s) infinite alternate ease-in-out;
+    background: #3498db;
+    content: '';
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    }
+    .push-pop > div:nth-of-type(2) {
+    background: #3498db;
+    height: 30px;
+    left: 50%;
+    position: absolute;
+    top: 100%;
+    transform: translate(-50%, -100%);
+    width: 20px;
+    }
+    .push-pop:after, .push-pop:before {
+    animation-name: push-pop-pushed;
+    animation-duration: calc(var(--duration) * 1s);
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    background: #3498db;
+    bottom: 0;
+    content: '';
+    height: 40px;
+    position: absolute;
+    width: 20px;
+    }
+    .push-pop:before {
+    animation-direction: alternate-reverse;
+    left: 0;
+    }
+    .push-pop:after {
+    animation-direction: alternate;
+    right: 0;
+    }
+
+    @keyframes push-pop-pushed {
+    0%, 72.5% {
+    transform: translate(0, 0);
+    }
+    100% {
+    transform: translate(0, 100%);
+    }
+    }
+
+    @keyframes push-pop-flip {
+    0% {
+    transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+    transform: translate(0, -80px) rotate(90deg);
+    }
+    100% {
+    transform: translate(0, 0) rotate(180deg);
+    }
+    }
+
+    @keyframes push-pop-slide {
+    to {
+    transform: translate(0, -100%) translate(80px, 0);
+    }
+    }
+    `;
+
+    // Add loader to document
+    document.body.appendChild(loaderStyle);
+    document.body.appendChild(overlay);
+
+    // Disable register button
+    const registerButton = document.getElementById("register-button");
+    registerButton.disabled = true;
+    registerButton.textContent = "Processing...";
+
+    fetch("/register-bus-student", {
+    method: "POST",
+    body: formData
+    })
+    .then(response => {
+    if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+    })
+    .then(order => {
+    if (order.error) {
+    // Remove loader on error
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+
+    alert("Error: " + order.error);
+    registerButton.disabled = false;
+    registerButton.textContent = "Register & Pay";
+    return;
+    }
+
+    let options = {
+    "key": "rzp_test_JuTY3XdaMpEpo9",
+    "amount": order.amount,
+    "currency": "INR",
+    "order_id": order.order_id,
+    "name": "CEC Bus Pass",
+    "description": "Bus Pass Registration",
+    "handler": function (response) {
+    // Update loading text
+    loadingText.textContent = "Verifying payment...";
+
+    fetch("/payment_status", {
+    method: "POST",
+    headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+    },
+    body: JSON.stringify({
+    payment_id: response.razorpay_payment_id,
+    order_id: response.razorpay_order_id,
+    signature: response.razorpay_signature
+    })
+    })
+    .then(res => {
+    if (!res.ok) {
+    throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+    return res.json();
+    })
+    .then(data => {
+    if (data.status === "success") {
+    // Custom success modal
+    const successModal = document.createElement('div');
+    successModal.style.position = 'fixed';
+    successModal.style.top = '0';
+    successModal.style.left = '0';
+    successModal.style.width = '100%';
+    successModal.style.height = '100%';
+    successModal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    successModal.style.display = 'flex';
+    successModal.style.justifyContent = 'center';
+    successModal.style.alignItems = 'center';
+    successModal.style.zIndex = '10000';
+
+    const modalContent = document.createElement('div');
+    modalContent.style.backgroundColor = 'white';
+    modalContent.style.padding = '30px';
+    modalContent.style.borderRadius = '10px';
+    modalContent.style.textAlign = 'center';
+    modalContent.style.maxWidth = '400px';
+
+    const successTitle = document.createElement('h2');
+    successTitle.textContent = 'Payment Successful!';
+    successTitle.style.color = 'green';
+
+    const successMessage = document.createElement('p');
+    successMessage.textContent = 'Your bus pass registration is complete.';
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'OK';
+    okButton.style.backgroundColor = '#3498db';
+    okButton.style.color = 'white';
+    okButton.style.border = 'none';
+    okButton.style.padding = '10px 20px';
+    okButton.style.borderRadius = '5px';
+    okButton.style.marginTop = '20px';
+
+    okButton.addEventListener('click', () => {
+        // Hide loader and modal
+        hideLoader();
+        document.body.removeChild(successModal);
+                                
+        // Redirect
+        window.location.href = data.redirect_url;
+    });
+
+    modalContent.appendChild(successTitle);
+    modalContent.appendChild(successMessage);
+    modalContent.appendChild(okButton);
+
+    successModal.appendChild(modalContent);
+
+    // Remove existing overlay
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+
+    // Add new modal
+    document.body.appendChild(successModal);
+    } else {
+    // Remove loader on failure
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+
+    alert("Payment status: " + (data.message || "Failed. Please try again."));
+    registerButton.disabled = false;
+    registerButton.textContent = "Register & Pay";
+    }
+    })
+    .catch(error => {
+    // Remove loader on error
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+
+    console.error("Error verifying payment:", error);
+    alert("Failed to verify payment. Please contact support.");
+    registerButton.disabled = false;
+    registerButton.textContent = "Register & Pay";
+    });
+    },
+    "prefill": {
+    "email": document.getElementById("eid").value,
+    "name": document.getElementById("fullname").value
+    },
+    "theme": { "color": "#000000" },
+    "modal": {
+    "ondismiss": function() {
+    // Remove loader if Razorpay modal is dismissed
+    if (document.body.contains(overlay)) {
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+    }
+    registerButton.disabled = false;
+    registerButton.textContent = "Register & Pay";
+    }
+    }
+    };
+
+    let rzp = new Razorpay(options);
+    rzp.on('payment.failed', function (response){
+    // Remove loader on payment failure
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+
+    alert(response.error.code + ": " + response.error.description);
+    registerButton.disabled = false;
+    registerButton.textContent = "Register & Pay";
+    });
+
+    rzp.open();
+    })
+    .catch(error => {
+    // Remove loader on initial request error
+    if (document.body.contains(overlay)) {
+    document.body.removeChild(overlay);
+    document.body.removeChild(loaderStyle);
+    }
+
+    console.error("Error:", error);
+    alert("An error occurred while processing payment request: " + error.message);
+    registerButton.disabled = false;
+    registerButton.textContent = "Register & Pay";
+    });
+    }
+    
+    // Bus details and boarding points
+    document.addEventListener('DOMContentLoaded', function() {
+        const busSelect = document.getElementById('bus');
+        const bpSelect = document.getElementById('bp');
+        const amountInput = document.getElementById('amount');
+        const busStatusDiv = document.getElementById('busStatus');
+        
+        // Add black theme for button
+        const registerButton = document.getElementById('register-button');
+        if (registerButton) {
+            registerButton.style.backgroundColor = '#000';
+            registerButton.style.color = '#fff';
+            registerButton.style.border = 'none';
+            registerButton.style.padding = '10px 20px';
+            registerButton.style.borderRadius = '5px';
+            registerButton.style.cursor = 'pointer';
+            registerButton.style.width = '100%';
+            registerButton.style.marginTop = '20px';
+            registerButton.style.fontWeight = 'bold';
+        }
+        
+        // Store boarding points and fares
+        let boardingPointsData = [];
+        
+        // Add event listener for bus selection change
+        busSelect.addEventListener('change', function() {
+            const selectedBus = busSelect.value;
+            if (selectedBus) {
+                // First check bus capacity
+                checkBusCapacity(selectedBus);
+                // Then fetch boarding points
+                fetchBoardingPoints(selectedBus);
+            } else {
+                clearBoardingPoints();
+                busStatusDiv.innerHTML = '';
+            }
+        });
+        
+        // Add event listener for boarding point selection
+        bpSelect.addEventListener('change', function() {
+            const selectedBoardingPoint = bpSelect.value;
+            updateFare(selectedBoardingPoint);
+        });
+        
+        // Fetch current student data and auto-fill the form
+        function fetchCurrentStudentData() {
+            fetch('/api/current-student')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch student data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Auto-fill the form fields
+                    document.getElementById('fullname').value = data.full_name || '';
+                    document.getElementById('sid').value = data.student_id || '';
+                    
+                    // Make student ID field readonly since it shouldn't be changed
+                    document.getElementById('sid').readOnly = true;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Don't show alert as this isn't critical
+                    console.log('Could not auto-fill student data. User will need to enter manually.');
+                });
+        }
+
+        // Call this function when the page loads
+        fetchCurrentStudentData();
+
+
+
+        // Function to check bus capacity
+        function checkBusCapacity(busId) {
+            fetch(`/api/bus-capacity/${busId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.is_available) {
+                        busStatusDiv.innerHTML = `<span class="available">Available - ${data.available_seats} seats left</span>`;
+                        registerButton.disabled = false;
+                    } else {
+                        busStatusDiv.innerHTML = `<span class="full">Bus Full - No seats available</span>`;
+                        // Disable the boarding point selection if bus is full
+                        clearBoardingPoints();
+                        // Optionally disable register button
+                        registerButton.disabled = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking bus capacity:', error);
+                    busStatusDiv.innerHTML = '<span>Error checking availability</span>';
+                });
+        }
+        
+        // Check all buses capacity on page load
+        function checkAllBusesCapacity() {
+            const buses = ['Bus 1 (MEC)', 'Bus 2 (Thoppumpady)', 'Bus 3 (Alappuzha)'];
+            const busOptions = busSelect.options;
+            
+            Promise.all(buses.map(busId => 
+                fetch(`/api/bus-capacity/${busId}`)
+                    .then(response => response.json())
+            ))
+            .then(results => {
+                // Update bus options based on capacity
+                for (let i = 0; i < results.length; i++) {
+                    const busData = results[i];
+                    // Find the corresponding option (skip the first "Select your bus" option)
+                    const optionIndex = i + 1;
+                    
+                    if (optionIndex < busOptions.length) {
+                        if (!busData.is_available) {
+                            // Mark full buses in the dropdown
+                            busOptions[optionIndex].text += " (FULL)";
+                            busOptions[optionIndex].classList.add('bus-option-disabled');
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking all buses capacity:', error);
+            });
+        }
+        
+        // Run this on page load
+        checkAllBusesCapacity();
+        
+        // Function to fetch boarding points from the server
+        function fetchBoardingPoints(busId) {
+            fetch(`/api/boarding-points/${busId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    boardingPointsData = data;
+                    populateBoardingPoints(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching boarding points:', error);
+                    clearBoardingPoints();
+                });
+        }
+        
+        // Function to populate boarding points dropdown
+        function populateBoardingPoints(points) {
+            // Clear existing options
+            bpSelect.innerHTML = '<option value="">Select your boarding point</option>';
+            
+            // Add new options
+            points.forEach(point => {
+                const option = document.createElement('option');
+                option.value = point.stop;
+                option.textContent = point.stop;
+                bpSelect.appendChild(option);
+            });
+            
+            // Reset fare amount
+            amountInput.value = '';
+        }
+        
+        // Function to clear boarding points
+        function clearBoardingPoints() {
+            bpSelect.innerHTML = '<option value="">Select your boarding point</option>';
+            amountInput.value = '';
+        }
+        
+        // Function to update fare based on selected boarding point
+        function updateFare(boardingPoint) {
+            if (!boardingPoint) {
+                amountInput.value = '';
+                return;
+            }
+            
+            // Find the selected boarding point data
+            const pointData = boardingPointsData.find(point => point.stop === boardingPoint);
+            
+            if (pointData && pointData.fare) {
+                amountInput.value = pointData.fare;
+            } else {
+                amountInput.value = '';
+            }
+        }
+    });
+  </script>
+</body>
+</html>

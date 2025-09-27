@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/buspass.css">
+    <!-- Add jsPDF library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>bus pass</title>
+</head>
+<body>
+    <nav>
+        <div id="img">
+            <img src="../assets/clogo.png" alt="Sample Image">
+        </div>
+        <div class="logo">
+            College of Engineering Cherthala
+        </div>
+        <input type="checkbox" id="click">
+        <label for="click" class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <ul>
+            <li><a href="{{ url_for('user_home') }}">Home</a></li>
+            <li><a href="{{ url_for('busdetail') }}">Bus Details</a></li>
+            <li><a href="{{ url_for('userregister') }}">Register</a></li>
+            <li><a class="active" href="{{ url_for('buspass') }}">Bus Pass</a></li>
+            <li class="profile">
+                <div class="profile-container">
+                    <button class="profile-button">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('profile') }}">
+                            <i class="far fa-user"></i>
+                            Profile
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    {% if has_buspass %}
+        <!-- Download button at top right below nav -->
+        <div class="download-button-container">
+            <button id="downloadBtn" class="download-btn"><i class="fas fa-download"></i> Download</button>
+        </div>
+        
+        <div class="bus-pass-container">
+            
+            <div id="busPassContent" class="bus-pass">
+                <h3 class="heading">College of Engineering Cherthala</h3>
+                <div class="bus-pass-details">
+                    <p><strong>Full Name : </strong> {{ student.get("full_name", "N/A") }}</p>
+                    <p><strong>Student ID : </strong> {{ student.get("student_id", "N/A") }}</p>
+                    <p><strong>Semester : </strong> {{ student.get("semester", "N/A") }}</p>
+                    <p><strong>Gender : </strong> {{ student.get("gender", "N/A") }}</p>
+                    <p><strong>Bus No. : </strong> {{ student.get("bus_no", "N/A") }}</p>
+                    <p><strong>Boarding Point : </strong> {{ student.get("boarding_point", "N/A") }}</p>
+                    <p><strong>Issue Year : </strong>{{current_year}}</p>
+                </div>
+                
+                <!-- Display Student Photo Only if Available -->
+                {% if photo %}
+                <div class="student-photo-container">
+                    <img class="student-photo" src="data:image/jpeg;base64,{{ photo }}" alt="Student Photo">
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div id="img3">
+            <img src="../assets/nothing.png" alt="Sample Image">
+        </div>
+    {% endif %}
+    
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // Import jsPDF from global scope
+            const { jsPDF } = window.jspdf;
+            
+            // Create PDF in portrait mode
+            const pdf = new jsPDF('portrait', 'mm', 'a4');
+            
+            // Get the bus pass content
+            const busPassContent = document.getElementById('busPassContent');
+            
+            // Create a new Image object for the logo
+            const logoImage = new Image();
+            logoImage.crossOrigin = "Anonymous";  // Important for handling CORS issues
+            
+            // Set the source path to the logo
+            logoImage.src = "../assets/logo.jpg";
+            
+            // Handle logo loading or fallback to generating PDF without logo
+            logoImage.onload = function() {
+                addLogoToPDF(logoImage);
+            };
+            
+            logoImage.onerror = function() {
+                console.error('Error loading college logo');
+                // Still create PDF but without the logo
+                pdf.setFontSize(14);
+                pdf.text("STUDENT BUS PASS", 105, 30,{ align: "center" });
+                addBusPassContent();
+            };
+            
+            function addLogoToPDF(logoImg) {
+                // Calculate dimensions to fit the logo centered at the top
+                const logoWidth = 200; // Adjust width as needed
+                const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
+                const logoX = (300 - logoWidth) / 2; // Center horizontally
+                const logoY = 10; // Position at the top with margin
+                
+                try {
+                    // Create a canvas for the logo
+                    const logoCanvas = document.createElement('canvas');
+                    logoCanvas.width = logoImg.width;
+                    logoCanvas.height = logoImg.height;
+                    const ctx = logoCanvas.getContext('2d');
+                    ctx.drawImage(logoImg, 0, 0, logoImg.width, logoImg.height);
+                    
+                    // Add the logo to the PDF
+                    const logoData = logoCanvas.toDataURL('image/png');
+                    pdf.addImage(logoData, 'PNG', logoX, logoY, logoWidth, logoHeight);
+                    
+                    // Add title below the logo
+                    const titleY = logoY + logoHeight + 30;
+                    addTitleWithUnderline(titleY);
+                    
+                    // Continue with the bus pass content
+                    addBusPassContent();
+                } catch (error) {
+                    console.error('Error processing logo for PDF:', error);
+                    // Fallback if canvas operations fail
+                    addTitleWithUnderline();
+                    addBusPassContent();
+                }
+            }
+
+            function addTitleWithUnderline(yPosition = 30) {
+                // Add title (STUDENT BUS PASS)
+                pdf.setFontSize(14);
+                pdf.setFont("helvetica", "bold");
+                
+                const title = "STUDENT BUS PASS";
+                const textWidth = pdf.getStringUnitWidth(title) * 14 / pdf.internal.scaleFactor;
+                const textX = (210 - textWidth) / 2;
+                
+                pdf.text(title, 105, yPosition, { align: "center" });
+                
+                // Calculate underline position (slightly below text)
+                const underlineY = yPosition + 1;
+                
+                // Add underline below the text
+                pdf.setLineWidth(0.5);
+                const underlineStart = 105 - (textWidth / 2);
+                const underlineEnd = 105 + (textWidth / 2);
+                pdf.line(underlineStart, underlineY, underlineEnd, underlineY);
+                
+                // Add horizontal separator line
+                const separatorY = yPosition - 20;
+                pdf.setDrawColor(50, 50, 50);
+                pdf.setLineWidth(0.6);
+                pdf.line(5, separatorY, 205, separatorY);
+            }
+            
+            function addBusPassContent() {
+                // Handle student photo if present
+                const studentPhotoElements = document.querySelectorAll('.student-photo');
+                if (studentPhotoElements.length > 0) {
+                    const studentPhoto = studentPhotoElements[0];
+                    
+                    if (studentPhoto.complete) {
+                        renderBusPassContent();
+                    } else {
+                        studentPhoto.addEventListener('load', renderBusPassContent);
+                        studentPhoto.addEventListener('error', function() {
+                            console.error('Error loading student photo');
+                            renderBusPassContent();
+                        });
+                    }
+                } else {
+                    renderBusPassContent();
+                }
+                
+                function renderBusPassContent() {
+                    // Use html2canvas for the bus pass content
+                    html2canvas(busPassContent, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: "#ffffff"
+                    }).then(function(canvas) {
+                        // Calculate dimensions to fit on A4 and position in the middle
+                        const imgWidth = 170; // Adjust width to fit A4 page with margins
+                        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                        const imgX = (210 - imgWidth) / 2; // Center horizontally
+                        const imgY = 100; // Position in the middle of the page (adjust as needed)
+                        
+                        // Add the bus pass content to the PDF
+                        const imgData = canvas.toDataURL('image/png');
+                        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
+                        
+                        // Add footer
+                        pdf.setFontSize(12);
+                        pdf.setFont("helvetica", "bold");
+                        pdf.text("This bus pass is valid for the current academic year", 105, 285, { align: "center" });
+                        
+                        // Download the PDF
+                        pdf.save('StudentBusPass.pdf');
+                    }).catch(function(error) {
+                        console.error('Error generating PDF:', error);
+                        alert('Error generating PDF. Please try again.');
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

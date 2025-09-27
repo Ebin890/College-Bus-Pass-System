@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() if csrf_token else '' }}">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/adminmanagestudent.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <title>manage students</title>
+    <style>
+        #notification-status {
+            display: none;
+            padding: 10px 15px;
+            margin: 0;
+            max-width: 50%;
+            position: fixed;
+            top: 100px;
+            left: 5%;
+            right: 0;
+            z-index: 1000;
+            text-align: center;
+            background-color: white; /* Set the default background color to white */
+            color: black;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .success {
+            background-color: #d4edda !important;
+            color: #155724 !important;
+            border: 1px solid #c3e6cb !important;
+        }
+        
+        .error {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+            border: 1px solid #f5c6cb !important;
+        }
+        
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+    </style>
+    
+
+    
+</head>
+<body>
+   <nav>
+      <div id="img">
+          <img src="../assets/clogo.png" alt="Sample Image">
+      </div>
+      <div class="logo">
+          College of Engineering Cherthala
+      </div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+          <li><a class="active" href="{{ url_for('admin_home') }}">Home</a></li>
+          <li><a href="{{url_for('adminmanagebus') }}">Manage Bus</a></li>
+          <li><a href="{{ url_for('adminmanagestudent') }}">Manage Students</a></li>
+          <li><a href="#" id="notification-btn">Notification</a></li>
+          
+          <li class="profile">
+              <div class="profile-container">
+                  <button class="profile-button">
+                      <i class="fas fa-user"></i>
+                  </button>
+                  <div class="dropdown-content">
+                      <a href="{{ url_for('logout') }}">
+                          <i class="fas fa-sign-out-alt"></i>
+                          Logout
+                      </a>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </nav>
+
+  <div id="notification-status"></div>
+
+    <div class="container4">     
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-container">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search for anything...">
+                <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="busFilter">Bus:</label>
+                    <select id="busFilter">
+                        <option value="">All Buses</option>
+                        <!-- Bus options will be populated dynamically via JS -->
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="semesterFilter">Semester:</label>
+                    <select id="semesterFilter">
+                        <option value="">All Semesters</option>
+                        <!-- Semester options will be populated dynamically via JS -->
+                    </select>
+                </div>
+                
+                <button id="resetFilters" class="reset-button">
+                    <i class="fas fa-sync-alt"></i> Reset Filters
+                </button>
+            </div>
+            <div class="download-container">
+                <button id="downloadPdfButton" class="download-btn" title="Download Student Details">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+            </div>
+        </div>
+        
+        <div class="students-actions-container">
+            <div class="student-count">
+                <span id="studentCountDisplay">Total Students: 0</span>
+            </div>
+            <div class="delete-actions-container">
+                <button id="deleteFilteredButton" class="delete-filtered-btn" disabled>
+                    <i class="fas fa-trash-alt"></i> Delete Filtered Students
+                </button>
+                <button id="deleteAllButton" class="delete-all-btn">
+                    <i class="fas fa-trash"></i> Delete All Students
+                </button>
+            </div>
+        </div>
+
+        
+        <!-- Table with student data -->
+        <div class="table-responsive">
+            <table id="studentTable">
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                        <th>{{ column }}</th>
+                        {% endfor %}
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documents %}
+                    <tr data-id="{{ doc['_id']['$oid'] }}">
+                        {% for column in columns %}
+                        {% if column == 'photo' %}
+                        <td class="photo-cell" data-column="{{ column }}">
+                            {% if doc[column] %}
+                            <img src="data:image/jpeg;base64,{{ doc[column] }}" 
+                                 class="student-photo" 
+                                 width="50" 
+                                 height="50" 
+                                 alt="Student Photo" 
+                                 data-base64="data:image/jpeg;base64,{{ doc[column] }}">
+                            {% else %}
+                            <div class="no-photo">No photo</div>
+                            {% endif %}
+                            <div class="photo-upload-container">
+                                <input type="file" class="photo-upload" accept="image/*" style="display:none">
+                                <button class="upload-photo-btn" title="Upload new photo"><i class="fas fa-camera"></i></button>
+                            </div>
+                        </td>
+                        {% else %}
+                        <td contenteditable="true" data-column="{{ column }}">{{ doc[column] }}</td>
+                        {% endif %}
+                        {% endfor %}
+                        <td>
+                            <button class="save-btn">Save</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- No results message -->
+        <div id="noResults" style="display: none; text-align: center; padding: 20px;">
+            No students match your search criteria.
+        </div>
+    </div>
+
+    <img src="../assets/logo.jpg" alt="College Logo" class="pdf-logo" style="display:none;">
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle">Confirmation</h3>
+            <p id="modalMessage">Are you sure you want to proceed?</p>
+            <div class="modal-buttons">
+                <button id="cancelAction" class="cancel-btn">Cancel</button>
+                <button id="confirmAction" class="confirm-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Existing styles */
+        .save-btn.success {
+            background-color: #4CAF50;
+        }
+        .save-btn.error {
+            background-color: #f44336;
+        }
+        .save-btn.loading, .delete-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        td[contenteditable="true"]:focus {
+            outline: 2px solid #007bff;
+            padding: 5px;
+        }
+        td[contenteditable="true"]:hover:not(:focus) {
+            background-color: #f8f9fa;
+        }
+        .table-responsive {
+            overflow-x: auto; /* Enables horizontal scrolling if needed */
+            margin: 0 -15px; /* Counters the container padding */
+        }
+        
+        /* New styles for search and filter */
+        .search-filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .search-container {
+            display: flex;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-container input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            font-size: 14px;
+        }
+        
+        .search-container button {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .filter-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .reset-button {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .reset-button:hover {
+            background-color: #e9ecef;
+        }
+        
+        
+        
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .cancel-btn {
+            padding: 8px 16px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .confirm-btn {
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Responsive adjustments */
+        @media screen and (max-width: 768px) {
+            .search-container, .filter-container, .bulk-action-buttons {
+                flex: 1 1 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+
+            .download-container {
+                align-self: flex-end;
+                margin-top: 10px;
+            }
+        }
+        .download-btn {
+            background: black;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            background-color: #555;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-container {
+            margin-left: auto;
+        }
+
+        .pdf-logo {
+            max-width: 200px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .students-actions-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 15px;
+        }
+        
+        .student-count {
+            font-weight: bold;
+            color: #333;
+            font-size: 1rem;
+        }
+    </style>
+
+<script>
+    document.getElementById('notification-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const statusDiv = document.getElementById('notification-status');
+        statusDiv.innerHTML = 'Sending notifications... <span class="close-btn" onclick="closeNotification()">×</span>';
+        statusDiv.style.display = 'block';
+        statusDiv.className = '';
+        
+        // Send the request to the backend
+        fetch('/send-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            statusDiv.style.display = 'block';
+            
+            if (data.error) {
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = "Error: " + data.error + ' <span class="close-btn" onclick="closeNotification()">×</span>';
+            } else {
+                statusDiv.className = 'success';
+                statusDiv.innerHTML = data.message + ' <span class="close-btn" onclick="closeNotification()">×</span>';
+            }
+        })
+        .catch(error => {
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'error';
+            statusDiv.innerHTML = "Failed to connect to server. Please try again. <span class=\"close-btn\" onclick=\"closeNotification()\">×</span>";
+            console.error("Error:", error);
+        });
+    });
+    
+    function closeNotification() {
+        document.getElementById('notification-status').style.display = 'none';
+    }
+  </script>
+
+    
+    <script src="../js/adminmanagestudent.js"></script>   
+
+
+    
+</body>
+</html>

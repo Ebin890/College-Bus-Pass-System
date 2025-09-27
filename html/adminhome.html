@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/adminhome.css">
+    <title>home</title>
+    <style>
+        #notification-status {
+            display: none;
+            padding: 10px 15px;
+            margin: 0;
+            max-width: 50%;
+            position: fixed;
+            top: 100px;
+            left: 5%;
+            right: 0;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+   <nav>
+      <div id="img">
+          <img src="/assets/clogo.png" alt="Sample Image">
+      </div>
+      <div class="logo">
+          College of Engineering Cherthala
+      </div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+          <li><a class="active" href="{{ url_for('admin_home') }}">Home</a></li>
+          <li><a href="{{url_for('adminmanagebus') }}">Manage Bus</a></li>
+          <li><a href="{{ url_for('adminmanagestudent') }}">Manage Students</a></li>
+          <li><a href="#" id="notification-btn">Notification</a></li>
+          <li class="profile">
+              <div class="profile-container">
+                  <button class="profile-button">
+                      <i class="fas fa-user"></i>
+                  </button>
+                  <div class="dropdown-content">
+                    <a href="{{ url_for('logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>                    
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </nav>
+
+  <div id="notification-status"></div>
+
+  <div class="container">
+    <h2 class="title">WELCOME TO ADMIN DASHBOARD !</h2>
+    <p class="text">
+       This hub is your comprehensive tool for managing
+       student applications, tracking payments,and updating 
+       bus schedules efficiently. It simplifies administrative 
+       tasks by offering features like  application  reviews , payment
+        monitoring , and  schedule updates, all designed to enhance 
+       your workflow and improve communication with students effectively.
+    </p>
+  </div>
+
+  <div class="img1">
+      <img src="/assets/ad1.jpg" alt="Sample Image">
+  </div>
+  
+  <script>
+    document.getElementById('notification-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const statusDiv = document.getElementById('notification-status');
+        statusDiv.innerHTML = 'Sending notifications... <span class="close-btn" onclick="closeNotification()">×</span>';
+        statusDiv.style.display = 'block';
+        statusDiv.className = '';
+        
+        // Send the request to the backend
+        fetch('/send-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            statusDiv.style.display = 'block';
+            
+            if (data.error) {
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = "Error: " + data.error + ' <span class="close-btn" onclick="closeNotification()">×</span>';
+            } else {
+                statusDiv.className = 'success';
+                statusDiv.innerHTML = data.message + ' <span class="close-btn" onclick="closeNotification()">×</span>';
+            }
+        })
+        .catch(error => {
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'error';
+            statusDiv.innerHTML = "Failed to connect to server. Please try again. <span class=\"close-btn\" onclick=\"closeNotification()\">×</span>";
+            console.error("Error:", error);
+        });
+    });
+    
+    function closeNotification() {
+        document.getElementById('notification-status').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

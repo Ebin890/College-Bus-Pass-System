@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.png" type="image/x-icon">
+    <title>forgot password</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            
+            background: white;
+            padding: 30px;           
+            max-width: 250px;
+            margin: auto;
+            margin-top: -430px;
+            margin-left: 660px;
+        }
+        h2 {
+            color: #333;
+            text-align: left;
+            margin-top: -5px;
+            font-size: 2rem;
+            font-weight: bolder;
+        }
+    
+        .forgot-text {
+            display: inline-block;
+        }
+    
+        .password-text {
+            display: inline-block;
+            margin-left: 0; /* Aligns with the F in Forgot */
+            padding-left: 0;
+        }
+        
+        input {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 15px;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            width: 40%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
+    
+    
+        nav {
+            display: flex;
+            align-items: center;
+            height: 135px; 
+            width: 100%;
+            background: white;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1500; 
+            flex-wrap: wrap;
+        }
+        
+        #img img {
+            margin-top: 0px;
+            margin-left: 30px;
+            height: 90px; 
+            width: 700px; 
+            max-height: 120px; 
+        }
+    
+        .logo {
+            color: cornflowerblue;
+            font-size: 22px;
+            font-weight: bold;
+            margin-left: 1150px;
+            margin-top: -200px;
+        }
+    
+        
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column; 
+                height: auto; 
+                align-items: center;
+            }
+        
+            #img img {
+                display: flex;
+                justify-content: left; 
+                max-height: 70px;
+                max-width: 580px;
+                margin-left: -10px;
+            }
+        
+            .logo {
+                font-size: 12px;
+                margin-left: -10px; 
+                margin-top: 5px; 
+                text-align: center; 
+            }
+        }
+        
+        .img1 {
+            margin-top: 50px;
+            margin-left: -400px;
+        }
+        
+    
+        #e1{
+            color: #444;
+            text-align: left; 
+            display: block;
+            font-weight: bold;                        
+        }
+    
+        #b1{
+            margin-left: 185px;
+            border-radius: 50px;
+            width: 30%;
+            margin-top: 12px;
+        }
+    
+        @media screen and (max-width: 768px) {
+            html{
+                scroll-behavior: smooth;
+            }
+            body {
+                overflow-x: hidden;
+                max-width: 100%; /* Add padding for fixed navbar */
+            }
+            
+            .img1 {
+                margin: 20px auto;
+                text-align: left;
+                margin-left: 0px;
+            }
+            
+            .img1 img {
+                width: 100%;
+                max-width: 300px;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+            }
+            
+            .container {
+                background: white;
+                padding: 30px;
+                max-width: 90%;
+                width: 200px;
+                margin: auto;
+                margin-top: 10px;
+            }
+
+            #e1{
+                font-size: 13px;
+            }
+            input {
+            width: 85%;
+            padding: 10px;
+            margin: 10px 0;
+            margin-left: -10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+            #b1{
+            margin-left: 120px;
+            border-radius: 50px;
+            width: 30%;
+            margin-top: 12px;
+            }
+    
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div id="img">
+            <img src="/assets/logo.jpg" alt="Sample Image">
+        </div>
+        <div class="logo">
+            CODE : CEC
+        </div>
+    </nav>
+    <div class="img1">
+        <img  src="../assets/fp.png" alt="Sample Image" >
+    </div>
+    <div class="container">
+        <h2>
+            <span class="forgot-text">Forgot</span><br>
+            <span class="password-text">Password?</span>
+        </h2>
+            <label id="e1" for="staff_id">Enter Staff Id</label>
+            <input type="text" id="staff_id" placeholder="Enter your Staff Id" required>
+            <br>
+            <button id="b1" onclick="sendResetEmail()">Reset</button>
+            <p id="message"></p>
+    </div>
+
+    <script>
+        function sendResetEmail() {
+            const staffId = document.getElementById("staff_id").value;
+            const messageBox = document.getElementById("message");
+        
+            if (!staffId) {
+                messageBox.style.color = "red";
+                messageBox.innerText = "❌ Please enter Staff ID!";
+                return;
+            }
+        
+            fetch("http://localhost:5000/send-email-admin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ staff_id: staffId })  // ✅ Send staff_id instead of email
+            })
+            .then(response => response.json())
+            .then(data => {
+                messageBox.style.color = data.message.includes("✅") ? "green" : "red";
+                messageBox.innerText = data.message;
+            })
+            .catch(error => {
+                messageBox.style.color = "red";
+                messageBox.innerText = "❌ Error sending email.";
+            });
+        }
+    </script>
+    
+ 
+
+</body>
+</html>

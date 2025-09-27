@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/adminmanagebus.css">
+    <title>manage bus</title>
+    <style>
+
+        #notification-status {
+            display: none;
+            padding: 10px 15px;
+            margin: 0;
+            max-width: 50%;
+            position: fixed;
+            top: 100px;
+            left: 5%;
+            right: 0;
+            z-index: 1000;
+            text-align: center;
+            background-color: white; /* Set the default background color to white */
+            color: black;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .success {
+            background-color: #d4edda !important;
+            color: #155724 !important;
+            border: 1px solid #c3e6cb !important;
+        }
+        
+        .error {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+            border: 1px solid #f5c6cb !important;
+        }
+        
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+        /* Bus management styles */
+        .bus-container {
+            background-color: whitesmoke;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 45px auto;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        .bus-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .bus-image {
+            width: 120px;
+            height: 120px;
+            flex: 0 0 auto;
+            margin: 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .bus-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .bus-header-content {
+            flex: 1;
+        }
+        
+        .bus-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .bus-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        
+        .bus-schedule {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        
+        .bus-content {
+            margin-top: 15px;
+        }
+        
+        .bus-stops {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .stop-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .stop-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stop-item .stop-name {
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .stop-item .fare {
+            font-weight: 600;
+            color: #e74c3c;
+            min-width: 80px; /* Ensure consistent width for fare display */
+            text-align: right; /* Right-align the fare text */
+            margin-right: 10px;
+        }
+        
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .bus-details-container {
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .no-stops {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .bus-selector {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+            margin-left: 20px;
+        }
+        
+        .bus-selector select {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+            font-size: 1rem;
+            width: 300px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 5px; /* Add space between buttons */
+            flex-shrink: 0;
+        }
+        
+        .action-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            min-width: 60px;
+        }
+        
+        .edit-button {
+            background-color: #2980b9;
+            color: white;
+        }
+        
+        .delete-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .add-route-form {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-submit {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .edit-mode {
+            background-color: #f0f8ff;
+        }
+        
+        .edit-fields {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-fields input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .save-edit-button {
+            background-color: #27ae60;
+            color: white;
+            margin-left: 5px;
+        }
+        
+        .cancel-edit-button {
+            background-color: #7f8c8d;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .bus-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .bus-image {
+                width: 100%;
+                height: 180px;
+                margin-bottom: 15px;
+            }
+        }
+
+        .route-input-container {
+            background-color: #f0f3f5; 
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 75%; /* Span full width */
+            max-width: 100%; /* Remove max-width constraint */
+            margin-left: 165px;
+            padding: 20px; 
+            box-sizing: border-box; /* Ensure padding doesn't add extra width */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .route-input-header {
+            margin-left: 13px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .route-input-content {
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            flex-wrap: nowrap; /* Prevent wrapping */
+            width: 100%; /* Ensure full width */
+        }
+        
+        .route-input-group {
+            display: flex; 
+            align-items: center; 
+            gap: 5px;
+        }
+        
+        .route-input-label {
+            color: #34495e; 
+            font-weight: 500; 
+            white-space: nowrap;
+            font-size: 0.9rem; /* Slightly smaller font size */
+        }
+        
+        .route-input {
+            padding: 6px; /* Slightly smaller padding */
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            font-size: 0.9rem; /* Smaller font size */
+        }
+        
+        .route-input-bus {
+            width: 200px; /* Slightly narrower */
+        }
+        
+        .route-input-stop-name {
+            width: 250px; /* Wider stop name input */
+        }
+        
+        .route-input-fare {
+            width: 100px; /* Narrower fare input */
+        }
+        
+        .route-add-button {
+            padding: 6px 12px; /* Slightly smaller padding */
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            height: 35px; /* Slightly shorter */
+            font-size: 0.9rem; /* Smaller font size */
+        }
+        
+        @media (max-width: 768px) {
+            .route-input-content {
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: nowrap;
+            }
+            
+            .route-input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .route-input {
+                width: auto;
+            }
+            
+            .route-add-button {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+   <nav>
+      <div id="img">
+          <img src="../assets/clogo.png" alt="Sample Image">
+      </div>
+      <div class="logo">
+          College of Engineering Cherthala
+      </div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+          <li><a class="active" href="{{ url_for('admin_home') }}">Home</a></li>
+          <li><a href="{{url_for('adminmanagebus') }}">Manage Bus</a></li>
+          <li><a href="{{ url_for('adminmanagestudent') }}">Manage Students</a></li>
+          <li><a href="#" id="notification-btn">Notification</a></li>
+          <li class="profile">
+              <div class="profile-container">
+                  <button class="profile-button">
+                      <i class="fas fa-user"></i>
+                  </button>
+                  <div class="dropdown-content">
+                      <a href="{{ url_for('logout') }}">
+                          <i class="fas fa-sign-out-alt"></i>
+                          Logout
+                      </a>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </nav>
+
+  <div id="notification-status"></div>
+
+    <div class="container4">
+        <!-- Bus Management Interface -->
+        <div class="bus-details-container">
+            <div class="route-input-container">
+                <div class="route-input-header">
+                    <h3>Add New Bus Route</h3>
+                </div>
+                <div class="route-input-content">
+                    <div class="route-input-group">
+                        <label for="busSelector" class="route-input-label">Select Bus:</label>
+                        <select id="busSelector" class="route-input route-input-bus">
+                            <option value="Bus 1 (MEC)">Bus 1 (MEC)</option>
+                            <option value="Bus 2 (Thoppumpady)">Bus 2 (Thoppumpady)</option>
+                            <option value="Bus 3 (Alappuzha)">Bus 3 (Alappuzha)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="route-input-group">
+                        <label for="routeStopName" class="route-input-label">Stop Name:</label>
+                        <input 
+                            type="text" 
+                            id="routeStopName" 
+                            placeholder="Enter stop name" 
+                            class="route-input route-input-stop-name"
+                        >
+                    </div>
+                    
+                    <div class="route-input-group">
+                        <label for="routeFare" class="route-input-label">Fare (₹):</label>
+                        <input 
+                            type="number" 
+                            id="routeFare" 
+                            placeholder="Enter fare" 
+                            class="route-input route-input-fare"
+                        >
+                    </div>
+                    
+                    <div class="route-input-group">
+                        <label class="route-input-label">&nbsp;</label>
+                        <button 
+                            class="route-add-button" 
+                            onclick="addRoute()"
+                        >
+                            Add Route
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <!-- Bus containers will be shown based on selection -->
+            <div id="busContainers">
+                <!-- Bus 1 Container -->
+                <div id="bus1Container" class="bus-container" style="display: none;">
+                    <div class="bus-header">
+                        <div class="bus-image">
+                            <img src="../assets/bus1.jpg" alt="Bus 1 (MEC)" onerror="this.src='../assets/bus-placeholder.jpg'">
+                        </div>
+                        <div class="bus-header-content">
+                            <div class="bus-header-top">
+                                <h2>Bus 1 (MEC)</h2>
+                            </div>
+                            <div class="bus-schedule">
+                                Departs MEC at 7:15 AM - Arrives at College by 8:45 AM
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bus-content">
+                        <div id="bus1-stops" class="bus-stops">
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bus 2 Container -->
+                <div id="bus2Container" class="bus-container" style="display: none;">
+                    <div class="bus-header">
+                        <div class="bus-image">
+                            <img src="../assets/bus2.jpg" alt="Bus 2 (Thoppumpady)" onerror="this.src='../assets/bus-placeholder.jpg'">
+                        </div>
+                        <div class="bus-header-content">
+                            <div class="bus-header-top">
+                                <h2>Bus 2 (Thoppumpady)</h2>
+                            </div>
+                            <div class="bus-schedule">
+                                Departs Thevara at 7:25 AM - Arrives at College by 8:40 AM
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bus-content">
+                        <div id="bus2-stops" class="bus-stops">
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bus 3 Container -->
+                <div id="bus3Container" class="bus-container" style="display: none;">
+                    <div class="bus-header">
+                        <div class="bus-image">
+                            <img src="../assets/bus3.jpg" alt="Bus 3 (Alappuzha)" onerror="this.src='../assets/bus-placeholder.jpg'">
+                        </div>
+                        <div class="bus-header-content">
+                            <div class="bus-header-top">
+                                <h2>Bus 3 (Alappuzha)</h2>
+                            </div>
+                            <div class="bus-schedule">
+                                Departs Alappuzha District Collectorate at 7:45 AM - Arrives at College by 8:45 AM
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bus-content">
+                        <div id="bus3-stops" class="bus-stops">
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set Bus 1 as the default selection in the dropdown
+            const busSelector = document.getElementById('busSelector');
+            busSelector.value = 'Bus 1 (MEC)';
+            
+            // Show the Bus 1 container by default
+            document.getElementById('bus1Container').style.display = 'block';
+            
+            // Fetch and display Bus 1 stops
+            fetchBusStops('Bus 1 (MEC)', 'bus1-stops');
+
+            // Add event listener to the bus selector
+            busSelector.addEventListener('change', selectBus);
+        });
+
+        // Function to select and display a specific bus
+        function selectBus() {
+            const busSelector = document.getElementById('busSelector');
+            const selectedBus = busSelector.value;
+            
+            // Hide all bus containers
+            document.getElementById('bus1Container').style.display = 'none';
+            document.getElementById('bus2Container').style.display = 'none';
+            document.getElementById('bus3Container').style.display = 'none';
+            
+            if (selectedBus === 'Bus 1 (MEC)') {
+                document.getElementById('bus1Container').style.display = 'block';
+                fetchBusStops('Bus 1 (MEC)', 'bus1-stops');
+            } else if (selectedBus === 'Bus 2 (Thoppumpady)') {
+                document.getElementById('bus2Container').style.display = 'block';
+                fetchBusStops('Bus 2 (Thoppumpady)', 'bus2-stops');
+            } else if (selectedBus === 'Bus 3 (Alappuzha)') {
+                document.getElementById('bus3Container').style.display = 'block';
+                fetchBusStops('Bus 3 (Alappuzha)', 'bus3-stops');
+            }
+        }
+        
+        // Function to fetch and display bus stops with edit/delete functionality
+        async function fetchBusStops(busId, containerId) {
+            try {
+                const response = await fetch(`/api/boarding-points/${busId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch bus details');
+                }
+                
+                const data = await response.json();
+                const container = document.getElementById(containerId);
+                
+                // Clear loading spinner
+                container.innerHTML = '';
+                
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="no-stops">No stops available for this bus.</div>';
+                    return;
+                }
+                
+                // Sort stops by fare (ascending)
+                data.sort((a, b) => parseFloat(a.fare) - parseFloat(b.fare));
+                
+                // Create stop items
+                data.forEach(stop => {
+                    const stopItem = document.createElement('div');
+                    stopItem.className = 'stop-item';
+                    stopItem.dataset.stopId = stop._id; // Store the ID in the DOM element
+                    
+                    const stopName = document.createElement('div');
+                    stopName.className = 'stop-name';
+                    stopName.textContent = stop.stop;
+                    
+                    const fare = document.createElement('div');
+                    fare.className = 'fare';
+                    fare.textContent = `₹${stop.fare}`;
+                    
+                    const actionButtons = document.createElement('div');
+                    actionButtons.className = 'action-buttons';
+                    
+                    const editButton = document.createElement('button');
+                    editButton.className = 'action-button edit-button';
+                    editButton.textContent = 'Edit';
+                    editButton.onclick = function() {
+                        // Make sure we have a valid ID
+                        if (!stop._id) {
+                            console.error("Missing stop ID", stop);
+                            alert("Cannot edit this stop: Missing ID");
+                            return;
+                        }
+                        editStop(stopItem, stop._id, stop.stop, stop.fare, busId);
+                    };
+                    
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'action-button delete-button';
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.onclick = function() {
+                        if (!stop._id) {
+                            console.error("Missing stop ID", stop);
+                            alert("Cannot delete this stop: Missing ID");
+                            return;
+                        }
+                        deleteStop(stop._id, busId, containerId);
+                    };
+                    
+                    actionButtons.appendChild(editButton);
+                    actionButtons.appendChild(deleteButton);
+                    
+                    stopItem.appendChild(stopName);
+                    stopItem.appendChild(fare);
+                    stopItem.appendChild(actionButtons);
+                    container.appendChild(stopItem);
+                });
+                
+            } catch (error) {
+                console.error('Error fetching bus details:', error);
+                document.getElementById(containerId).innerHTML = 
+                    `<div class="no-stops">Error loading bus details. Please try again later.</div>`;
+            }
+        }
+        
+        // Function to edit a stop
+        function editStop(stopItem, stopId, stopName, fare, busId) {
+            // Make sure stopId is valid
+            if (!stopId) {
+                console.error("Invalid stop ID:", stopId);
+                alert("Cannot edit this stop: Invalid ID");
+                return;
+            }
+            
+            // Change the appearance of the stop item
+            stopItem.classList.add('edit-mode');
+            
+            // Save the original content to restore if cancelled
+            const originalContent = stopItem.innerHTML;
+            
+            // Create edit fields
+            stopItem.innerHTML = '';
+            
+            const editFields = document.createElement('div');
+            editFields.className = 'edit-fields';
+            
+            const stopNameInput = document.createElement('input');
+            stopNameInput.type = 'text';
+            stopNameInput.value = stopName;
+            stopNameInput.placeholder = 'Stop name';
+            
+            const fareInput = document.createElement('input');
+            fareInput.type = 'number';
+            fareInput.value = fare;
+            fareInput.placeholder = 'Fare';
+            
+            const saveButton = document.createElement('button');
+            saveButton.className = 'action-button save-edit-button';
+            saveButton.textContent = 'Save';
+            saveButton.onclick = function() {
+                updateStop(stopId, stopNameInput.value, fareInput.value, busId, stopItem);
+            };
+            
+            const cancelButton = document.createElement('button');
+            cancelButton.className = 'action-button cancel-edit-button';
+            cancelButton.textContent = 'Cancel';
+            cancelButton.onclick = function() {
+                stopItem.innerHTML = originalContent;
+                stopItem.classList.remove('edit-mode');
+            };
+            
+            editFields.appendChild(stopNameInput);
+            editFields.appendChild(fareInput);
+            editFields.appendChild(saveButton);
+            editFields.appendChild(cancelButton);
+            
+            stopItem.appendChild(editFields);
+        }
+        
+        // Function to update a stop
+        async function updateStop(stopId, stopName, fare, busId, stopItem) {
+            try {
+                const response = await fetch(`/api/boarding-points/${busId}/${stopId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        stop: stopName,
+                        fare: fare
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update stop');
+                }
+                
+                // Refresh the stops list
+                const containerId = busId === 'Bus 1 (MEC)' ? 'bus1-stops' :
+                                  busId === 'Bus 2 (Thoppumpady)' ? 'bus2-stops' : 'bus3-stops';
+                                  
+                fetchBusStops(busId, containerId);
+                
+                alert('Stop updated successfully!');
+                
+            } catch (error) {
+                console.error('Error updating stop:', error);
+                alert('Failed to update stop. Please try again.');
+                
+                // Remove edit mode
+                stopItem.classList.remove('edit-mode');
+            }
+        }
+        
+        // Function to delete a stop
+        async function deleteStop(stopId, busId, containerId) {
+            if (!confirm('Are you sure you want to delete this stop?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/boarding-points/${busId}/${stopId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to delete stop');
+                }
+                
+                // Refresh the stops list
+                fetchBusStops(busId, containerId);
+                
+                alert('Stop deleted successfully!');
+                
+            } catch (error) {
+                console.error('Error deleting stop:', error);
+                alert('Failed to delete stop. Please try again.');
+            }
+        }
+        
+        // Function to add a new route
+        async function addRoute() {
+            const busSelector = document.getElementById('busSelector');
+            const selectedBus = busSelector.value;
+            const stopName = document.getElementById('routeStopName').value;
+            const fare = document.getElementById('routeFare').value;
+            
+            if (!selectedBus) {
+                alert('Please select a bus first');
+                return;
+            }
+            
+            if (!stopName || !fare) {
+                alert('Please enter both stop name and fare');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/boarding-points/${selectedBus}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        stop: stopName,
+                        fare: fare
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to add route');
+                }
+                
+                // Clear the form fields
+                document.getElementById('routeStopName').value = '';
+                document.getElementById('routeFare').value = '';
+                
+                // Refresh the stops list for the selected bus
+                const containerId = selectedBus === 'Bus 1 (MEC)' ? 'bus1-stops' : selectedBus === 'Bus 2 (Thoppumpady)' ? 'bus2-stops' : 'bus3-stops';
+
+                fetchBusStops(selectedBus, containerId);
+                
+                alert('New route added successfully!');
+                
+            } catch (error) {
+                console.error('Error adding route:', error);
+                alert('Failed to add route. Please try again.');
+            }
+        }
+
+        // Add this function to run when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set Bus 1 as the default selection in the dropdown
+            const busSelector = document.getElementById('busSelector');
+            busSelector.value = 'Bus 1 (MEC)';
+            
+            // Show the Bus 1 container by default
+            document.getElementById('bus1Container').style.display = 'block';
+            
+            // Fetch and display Bus 1 stops
+            fetchBusStops('Bus 1 (MEC)', 'bus1-stops');
+        });
+    </script>
+    <script>
+        document.getElementById('notification-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('notification-status');
+            statusDiv.innerHTML = 'Sending notifications... <span class="close-btn" onclick="closeNotification()">×</span>';
+            statusDiv.style.display = 'block';
+            statusDiv.className = '';
+            
+            // Send the request to the backend
+            fetch('/send-notification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusDiv.style.display = 'block';
+                
+                if (data.error) {
+                    statusDiv.className = 'error';
+                    statusDiv.innerHTML = "Error: " + data.error + ' <span class="close-btn" onclick="closeNotification()">×</span>';
+                } else {
+                    statusDiv.className = 'success';
+                    statusDiv.innerHTML = data.message + ' <span class="close-btn" onclick="closeNotification()">×</span>';
+                }
+            })
+            .catch(error => {
+                statusDiv.style.display = 'block';
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = "Failed to connect to server. Please try again. <span class=\"close-btn\" onclick=\"closeNotification()\">×</span>";
+                console.error("Error:", error);
+            });
+        });
+        
+        function closeNotification() {
+            document.getElementById('notification-status').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

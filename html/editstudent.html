@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/editstudent.css">
+    <title>profile</title>
+</head>
+
+<body>
+   <nav>
+    <div id="img">
+        <img src="/assets/clogo.png" alt="Sample Image">
+    </div>
+      <div class="logo">
+          College of Engineering Cherthala
+      </div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+          <li><a class="active" href="{{ url_for('user_home') }}">Home</a></li>
+          <li><a href="{{ url_for('busdetail') }}">Bus Details</a></li>
+          <li><a href="{{ url_for('userregister') }}">Register</a></li>
+          <li><a href="{{ url_for('buspass') }}">Bus Pass</a></li>
+          <li class="profile">
+              <div class="profile-container">
+                  <button class="profile-button">
+                      <i class="fas fa-user"></i>
+                  </button>
+                  <div class="dropdown-content">
+                      <a href="{{ url_for('profile') }}">
+                          <i class="far fa-user"></i>
+                          Profile
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a href="{{ url_for('logout') }}">
+                          <i class="fas fa-sign-out-alt"></i>
+                          Logout
+                      </a>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </nav>
+
+  <div class="container">
+    <h2>Edit Profile</h2>
+    <form>
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your Full name">
+        </div>
+
+        <div class="form-group">
+            <label for="sid">Student Id</label>
+            <input type="text" id="sid" placeholder="Enter your Student Id">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your Email id">
+        </div>
+
+        <div class="form-group">
+            <label id="s1" for="semester" style="font-weight: bold;" >Semester</label>
+            <select id="semester" name="semester">
+                <option value="">Select your semester</option>
+                <option value="sem1">Semester 1</option>
+                <option value="sem2">Semester 2</option>
+                <option value="sem3">Semester 3</option>
+                <option value="sem4">Semester 4</option>
+                <option value="sem5">Semester 5</option>
+                <option value="sem6">Semester 6</option>
+                <option value="sem7">Semester 7</option>
+                <option value="sem8">Semester 8</option>
+            </select>
+        </div>
+
+        <div class="form-group"  >
+            <label for="gender" id="g1" >Gender</label>
+ 
+            <div class="gender-options">
+                <div class="radio-item">
+                    <input type="radio" id="male" name="gender" value="Male">
+                    <label for="male">Male</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="female" name="gender" value="Female">
+                    <label for="female">Female</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="other" name="gender" value="Other">
+                    <label for="other">Other</label>
+                </div>
+            </div>
+           
+        </div>
+
+        <button class="svbtn" type="submit">Save Changes</button>
+    </form>
+</div>
+
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the student ID from session storage or other client-side storage
+        // For now, we'll get it from the URL or use an API to fetch the current user
+        
+        // Get form elements
+        const nameInput = document.getElementById('name');
+        const sidInput = document.getElementById('sid');
+        const emailInput = document.getElementById('email');
+        const semesterSelect = document.getElementById('semester');
+        const maleRadio = document.getElementById('male');
+        const femaleRadio = document.getElementById('female');
+        const otherRadio = document.getElementById('other');
+        const form = document.querySelector('form');
+        
+        // Function to get current student ID from the server
+        function getCurrentStudentId() {
+            // This would typically come from a session variable
+            // For now, let's make an API call to get the current user's data
+            return fetch('/get_current_user')
+                .then(response => response.json())
+                .then(data => data.student_id)
+                .catch(error => {
+                    console.error('Error fetching current user:', error);
+                    // If we can't get it from API, see if it's stored in sessionStorage
+                    return sessionStorage.getItem('student_id');
+                });
+        }
+        
+        // Function to load profile data
+        function loadProfileData(studentId) {
+            fetch(`/get_profile/${studentId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate form fields with the data
+                    nameInput.value = data.full_name || '';
+                    sidInput.value = data.student_id || '';
+                    emailInput.value = data.email || '';
+                    
+                    // Set semester if it exists
+                    if (data.semester) {
+                        semesterSelect.value = data.semester;
+                    }
+                    
+                    // Set gender if it exists
+                    if (data.gender === 'Male') {
+                        maleRadio.checked = true;
+                    } else if (data.gender === 'Female') {
+                        femaleRadio.checked = true;
+                    } else if (data.gender === 'Other') {
+                        otherRadio.checked = true;
+                    }
+                    
+                    // Disable the student ID field as it shouldn't be editable
+                    sidInput.disabled = true;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load profile data. Please try again later.');
+                });
+        }
+        
+        // Function to handle form submission
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            // Get the gender value
+            let gender = '';
+            if (maleRadio.checked) gender = 'Male';
+            else if (femaleRadio.checked) gender = 'Female';
+            else if (otherRadio.checked) gender = 'Other';
+            
+            // Create data object
+            const data = {
+                student_id: sidInput.value,
+                name: nameInput.value,
+                email: emailInput.value,
+                semester: semesterSelect.value,
+                gender: gender
+            };
+            
+            // Send the update request
+            fetch('/update_profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update profile');
+                }
+                return response.json();
+            })
+            .then(result => {
+                alert('Profile updated successfully!');
+                // You could redirect here if needed
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update profile. Please try again.');
+            });
+        }
+        
+        // Set up form submission handler
+        form.addEventListener('submit', handleFormSubmit);
+        
+        // Load the profile data when the page loads
+        getCurrentStudentId().then(studentId => {
+            if (studentId) {
+                loadProfileData(studentId);
+            } else {
+                // If we couldn't get the student ID, we might need to redirect to login
+                console.error('Could not determine student ID');
+                alert('You must be logged in to view your profile');
+                window.location.href = '/login';
+            }
+        });
+        
+        // Set up navigation link handlers
+        document.querySelector('a[href="#profile"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/profile';
+        });
+        
+        document.querySelector('a[href="login.html"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/logout';
+        });
+        
+        // Set up home link handler
+        document.querySelector('a.active').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/home';
+        });
+    });
+</script>
+
+</body>
+</html>

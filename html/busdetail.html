@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/busdetail.css">
+    <title>bus details</title>
+    <style>
+        .bus-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        .bus-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .bus-image {
+            width: 120px;
+            height: 120px;
+            flex: 0 0 auto;
+            margin: 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .bus-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .bus-header-content {
+            flex: 1;
+        }
+        
+        .bus-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .bus-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        /* Removed the bus-icon class styles */
+        
+        .bus-schedule {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        
+        .bus-content {
+            margin-top: 15px;
+        }
+        
+        .bus-stops {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .stop-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stop-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stop-item .stop-name {
+            font-weight: 500;
+        }
+        
+        .stop-item .fare {
+            font-weight: 600;
+            color: #e74c3c;
+        }
+        
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .bus-details-container {
+            padding: 20px;
+            margin-top: 70px;
+        }
+        
+        .bus-details-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .bus-details-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+        }
+        
+        .no-stops {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .bus-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .bus-image {
+                width: 100%;
+                height: 180px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div id="img">
+            <img src="/assets/clogo.png" alt="Sample Image">
+        </div>
+        <div class="logo">
+            College of Engineering Cherthala
+        </div>
+        <input type="checkbox" id="click">
+        <label for="click" class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <ul>
+            <li><a href="{{ url_for('user_home') }}">Home</a></li>
+            <li><a class="active" href="{{ url_for('busdetail') }}">Bus Details</a></li>
+            <li><a href="{{ url_for('userregister') }}">Register</a></li>
+            <li><a href="{{ url_for('buspass') }}">Bus Pass</a></li>
+            <li class="profile">
+                <div class="profile-container">
+                    <button class="profile-button">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('profile') }}">
+                            <i class="far fa-user"></i>
+                            Profile
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="bus-details-container">
+        
+        <!-- Bus 1 (MEC) Container -->
+        <div class="bus-container">
+            <div class="bus-header">
+                <div class="bus-image">
+                    <img src="/assets/bus1.jpg" alt="Bus 1 (MEC)" onerror="this.src='/assets/bus-placeholder.jpg'">
+                </div>
+                <div class="bus-header-content">
+                    <div class="bus-header-top">
+                        <h2>Bus 1 (MEC)</h2>
+                        <!-- Removed the bus icon -->
+                    </div>
+                    <div class="bus-schedule">
+                        Departs MEC at 7:15 AM - Arrives at College by 8:45 AM
+                    </div>
+                </div>
+            </div>
+            <div class="bus-content">
+                <div id="bus1-stops" class="bus-stops">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bus 2 (Thoppumpady) Container -->
+        <div class="bus-container">
+            <div class="bus-header">
+                <div class="bus-image">
+                    <img src="/assets/bus2.jpg" alt="Bus 2 (Thoppumpady)" onerror="this.src='/assets/bus-placeholder.jpg'">
+                </div>
+                <div class="bus-header-content">
+                    <div class="bus-header-top">
+                        <h2>Bus 2 (Thoppumpady)</h2>
+                        <!-- Removed the bus icon -->
+                    </div>
+                    <div class="bus-schedule">
+                        Departs Thevara at 7:25 AM - Arrives at College by 8:40 AM
+                    </div>
+                </div>
+            </div>
+            <div class="bus-content">
+                <div id="bus2-stops" class="bus-stops">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bus 3 (Alappuzha) Container -->
+        <div class="bus-container">
+            <div class="bus-header">
+                <div class="bus-image">
+                    <img src="/assets/bus3.jpg" alt="Bus 3 (Alappuzha)" onerror="this.src='/assets/bus-placeholder.jpg'">
+                </div>
+                <div class="bus-header-content">
+                    <div class="bus-header-top">
+                        <h2>Bus 3 (Alappuzha)</h2>
+                        <!-- Removed the bus icon -->
+                    </div>
+                    <div class="bus-schedule">
+                        Departs Alappuzha District Collectorate at 7:45 AM - Arrives at College by 8:45 AM
+                    </div>
+                </div>
+            </div>
+            <div class="bus-content">
+                <div id="bus3-stops" class="bus-stops">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch and display bus stops
+        async function fetchBusStops(busId, containerId) {
+            try {
+                const response = await fetch(`/api/boarding-points/${busId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch bus details');
+                }
+                
+                const data = await response.json();
+                const container = document.getElementById(containerId);
+                
+                // Clear loading spinner
+                container.innerHTML = '';
+                
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="no-stops">No stops available for this bus.</div>';
+                    return;
+                }
+                
+                // Sort stops by fare (ascending)
+                data.sort((a, b) => parseFloat(a.fare) - parseFloat(b.fare));
+                
+                // Create stop items
+                data.forEach(stop => {
+                    const stopItem = document.createElement('div');
+                    stopItem.className = 'stop-item';
+                    
+                    const stopName = document.createElement('div');
+                    stopName.className = 'stop-name';
+                    stopName.textContent = stop.stop;
+                    
+                    const fare = document.createElement('div');
+                    fare.className = 'fare';
+                    fare.textContent = `₹${stop.fare}`;
+                    
+                    stopItem.appendChild(stopName);
+                    stopItem.appendChild(fare);
+                    container.appendChild(stopItem);
+                });
+                
+            } catch (error) {
+                console.error('Error fetching bus details:', error);
+                document.getElementById(containerId).innerHTML = 
+                    `<div class="no-stops">Error loading bus details. Please try again later.</div>`;
+            }
+        }
+        
+        // Load bus details when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchBusStops('Bus 1 (MEC)', 'bus1-stops');
+            fetchBusStops('Bus 2 (Thoppumpady)', 'bus2-stops');
+            fetchBusStops('Bus 3 (Alappuzha)', 'bus3-stops');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/userhome.css">
+    <title>home</title>
+</head>
+
+<body>
+   <nav>
+      <div id="img">
+          <img src="/assets/clogo.png" alt="Sample Image">
+      </div>
+      <div class="logo">
+          College of Engineering Cherthala
+      </div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+          <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+          <li><a class="active" href="{{ url_for('user_home') }}">Home</a></li>
+          <li><a href="{{ url_for('busdetail') }}">Bus Details</a></li>
+          <li><a href="{{ url_for('userregister') }}">Register</a></li>
+          <li><a href="{{ url_for('buspass') }}">Bus Pass</a></li>
+          <li class="profile">
+              <div class="profile-container">
+                  <button class="profile-button">
+                      <i class="fas fa-user"></i>
+                  </button>
+                  <div class="dropdown-content">
+                      <a href="{{ url_for('profile') }}">
+                          <i class="far fa-user"></i>
+                          Profile
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a href="{{ url_for('logout') }}">
+                          <i class="fas fa-sign-out-alt"></i>
+                          Logout
+                      </a>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </nav>
+  <div class="image-slider">
+    <link rel="preload" href="/assets/slider1.png" as="image">
+    <div class="slider-container">       
+        <div class="slide" style="background-image: url('/assets/slider1.png');"></div>
+        <div class="slide" style="background-image: url('/assets/slider2.png');"></div>
+        <div class="slide" style="background-image: url('/assets/slider3.png');"></div>
+        <div class="slide" style="background-image: url('/assets/slider4.png');"></div>
+        <div class="slide" style="background-image: url('/assets/slider5.png');"></div>
+    </div>
+    
+  </div>
+  <div class="container">
+   <h2 class="title">ABOUT</h2>
+   <p class="text">
+      The College Bus Pass Management System is a user
+      friendly digital platform designed to streamline the 
+      process of applying for and managing student bus 
+      passes. This system enables students to register,apply, 
+      renew,and download their bus passes with just a few clicks.
+      It is integrated with secure online payments via Razorpay.
+      Administrators benefit from an efficient dashboard.
+   </div>
+   <div class="container1">
+      <h2 class="title1">OUR VISION</h2>
+      <p class="text1">
+         Our aim is to provide a seamless, efficient, and eco-<br>
+         friendly transportation solution for students through<br>
+         digital automation, ensuring convenience and<br> 
+         accessibility for while reducing administrative<br> 
+         workload.
+    </div>
+
+    <div class="container2">
+      <h2 class="title2">OUR MISSION</h2>
+      <p class="text2">
+         - To simplify and digitize the process of bus<br> 
+         pass application and renewal.<br>  
+         - To enhance student mobility by providing a 
+         user-friendly online platform for bus pass management.<br>  
+         - To ensure secure and transparent payment processing 
+         for bus passes.<br>  
+         - To minimize administrative workload through an<br> 
+         automated system for pass issuance and verification.
+      </p>
+           
+    </div>
+    <div class="container3">
+      <h2 class="title3">HOW IT WORKS? </h2>
+      <p class="text3">
+         Step 1: Register for a bus pass.<br>
+         Step 2: Fill in your application details.<br>
+         Step 3: Select your preferred bus route.<br>
+         Step 4: Make the payment online.<br>
+         Step 5: Download your bus pass.<br>
+      </p>  
+    </div>
+    <div class="container4">
+        <h3 class="title4">CONTACT : </h3>
+        <p class="text4">
+            College of Engineering Cherthala,<br>
+            Pallippuram P.O, Alappuzha Dt.Kerala State,<br>
+            India-688541
+         </p>
+         <h3 class="title6">PHONE : </h3>
+         <p class="text6">
+            +91-478-2553416<br>
+            +91 8547005038<br>
+            +91 9349276717
+         </p>
+
+         <h3 class="title7">EMAIL ID : </h3>
+         <p class="text7">
+            principal@cectl.ac.in<br>
+            cecbuspass@gmail.com
+         </p>
+              
+        
+        <h3 class="title5">FOLLOW US : </h3>
+        <div class="socialIcons">
+            <a href="https://www.facebook.com/people/CeCherthala-Ihrd/pfbid0oZRM3WdZg3dWHb114NeS7SiFTTZLrBDNDLHpbmn4E1q1dmB1jabd5G18eD1LvcEEl/?mibextid=ZbWKwL"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/coe_cherthala_ihrd/?igshid=MmU2YjMzNjRlOQ%3D%3D"><i id="ist" class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.youtube.com/@cecherthala2004"><i id="yt"class="fa-brands fa-youtube"></i></a>
+        </div>
+    </div>
+        
+</body>
+</html>

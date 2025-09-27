@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cec</title>
+    <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <style>
+        /* Hide flash messages by default, they'll be shown in our custom dialog */
+        .flash-message {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div id="img">
+            <img src="/assets/logo.jpg" alt="Sample Image">
+        </div>
+        <div class="logo">
+            CODE : CEC
+        </div>
+    </nav>
+    <div><img id="bg" src="/assets/college.png" alt="Background Image"></div>   
+    <div class="container" id="main-container">
+        <div class="toggle-section student-toggle">
+            <h2 id="b1"></i>Welcome Aboard!</h2>
+            <p id="b11">Your journey with us just got easier.</p>
+            <button id="student-btn"><i class="fas fa-arrow-left"></i> STUDENT</button>
+        </div>
+
+        <div class="form-container" id="main-form-area">
+            <!-- Student Section -->
+            <div class="student-container hidden">
+                <div class="form-box" id="student-login">
+                    <h2>Student Login</h2>
+                    {% with messages = get_flashed_messages(category_filter=["login_error"]) %}
+                    {% if messages %}
+                    <div class="flash-message error">
+                        {{ messages[0] }}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    
+                    <form action="{{ url_for('student_login') }}" method="POST">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="student_id" placeholder="Student ID" required>
+                        </div>
+                        <div class="input-group password-container">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <i class="far fa-eye-slash toggle-password"></i>
+                        </div>
+                        <div class="forgot-pass1">
+                            <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+                        </div>                        
+                        <button type="submit"><i class="fas fa-sign-in-alt"></i>Login</button>
+                        <p>Don't have an account? <a href="#" onclick="toggleForm('student')">Sign Up</a></p>
+                    </form>
+                </div>
+                <div class="form-box hidden" id="student-signup">
+                    <h2></i>Student Signup</h2>
+                    {% with messages = get_flashed_messages(category_filter=["signup_error"]) %}
+                    {% if messages %}
+                    <div class="flash-message error">
+                        {{ messages[0] }}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    <form action="{{ url_for('student_signup') }}" method="POST">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="full_name" placeholder="Full Name" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" name="student_id" placeholder="Student ID" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="input-group password-container">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <i class="far fa-eye-slash toggle-password"></i>
+                        </div>
+                        <button type="submit"><i class="fas fa-user-plus"></i>Sign Up</button>
+                        
+                        <p>Already have an account? <a href="#" onclick="toggleForm('student')">Login</a></p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Section -->
+            <div class="admin-container">
+                <div class="form-box" id="admin-login">
+                    <h2></i>Admin Login</h2>
+                    {% with messages = get_flashed_messages(category_filter=["admin_login_error"]) %}
+                    {% if messages %}
+                    <div class="flash-message error">
+                        {{ messages[0] }}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    <form action="{{ url_for('admin_login') }}" method="POST">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="staff_id" placeholder="Staff Id" required>
+                        </div>
+                        <div class="input-group password-container">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <i class="far fa-eye-slash toggle-password"></i>
+                        </div>
+                        <div class="forgot-pass">
+                            <a href="/admin-forgot-password">Forgot Password?</a>
+                        </div>
+                        <button type="submit"><i class="fas fa-sign-in-alt"></i>Login</button>
+                        <p>Don't have an account? <a href="#" onclick="toggleForm('admin')">Sign Up</a></p>
+                    </form>
+                </div>
+                <div class="form-box hidden" id="admin-signup">
+                    <h2></i>Admin Signup</h2>
+                    {% with messages = get_flashed_messages(category_filter=["admin_signup_error"]) %}
+                    {% if messages %}
+                    <div class="flash-message error">
+                        {{ messages[0] }}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    <form action="{{ url_for('admin_signup') }}" method="POST">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="first_name" placeholder="First Name" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="last_name" placeholder="Last Name" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-id-badge"></i>
+                            <input type="text" name="staff_id" placeholder="Staff ID" required>
+                        </div>
+                        <!-- Password field removed as it's now auto-set -->
+                        <div class="info-text" style="margin: 10px 0; font-size: 11px; color: #666;">
+                            <i class="fas fa-info-circle"></i> Default password will be set automatically.
+                        </div>
+                        <button type="submit"><i class="fas fa-user-plus"></i>Sign Up</button>
+                        <p>Already have an account? <a href="#" onclick="toggleForm('admin')">Login</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="toggle-section admin-toggle">
+            <h2 id="a1">Glad to have you back!</h2>
+            <p id="a11">Your dashboard is ready.<br>Let's keep operations smooth!</p>
+            <button id="admin-btn">ADMIN <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    <script src="/js/login.js"></script>
+    <script>
+        // Check if we need to show the signup form based on URL parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the URL parameter for show_signup
+            const urlParams = new URLSearchParams(window.location.search);
+            const showSignup = urlParams.get('show_signup');
+            const showAdminSignup = urlParams.get('show_admin_signup');
+            const adminLogin = urlParams.get('admin_login');
+            
+            if (showSignup === 'true') {
+                // Make sure the student container is visible and the signup form is displayed
+                document.querySelector(".student-container").classList.remove("hidden");
+                document.querySelector(".admin-container").classList.add("hidden");
+                document.querySelector(".admin-toggle").classList.remove("hidden");
+                document.querySelector(".student-toggle").classList.add("hidden");
+                
+                // Show the signup form
+                document.getElementById('student-login').classList.add('hidden');
+                document.getElementById('student-signup').classList.remove('hidden');
+            }
+            
+            if (showAdminSignup === 'true') {
+                // Make sure the admin container is visible and the signup form is displayed
+                document.querySelector(".student-container").classList.add("hidden");
+                document.querySelector(".admin-container").classList.remove("hidden");
+                document.querySelector(".admin-toggle").classList.add("hidden");
+                document.querySelector(".student-toggle").classList.remove("hidden");
+                
+                // Show the signup form
+                document.getElementById('admin-login').classList.add('hidden');
+                document.getElementById('admin-signup').classList.remove('hidden');
+            }
+
+            if (adminLogin === 'true') {
+                document.querySelector(".student-container").classList.add("hidden");
+                document.querySelector(".admin-container").classList.remove("hidden");
+                document.querySelector(".admin-toggle").classList.add("hidden");
+                document.querySelector(".student-toggle").classList.remove("hidden");
+            }
+            
+            // Password toggle functionality
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const passwordField = this.previousElementSibling;
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    
+                    // Toggle the eye icon
+                    this.classList.toggle('fa-eye-slash');
+                    this.classList.toggle('fa-eye');
+                });
+            });
+        });
+    </script>
+    <!-- Error Dialog script - place at the end of the body -->
+    <script src="/js/error-dialog.js"></script>
+</body>
+</html>
