@@ -1,0 +1,386 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+} 
+
+body {
+  background-color: #f7f6f9;
+}
+
+#img3{
+  margin-left: 530px;
+  margin-top: 130px;
+}
+
+nav{
+  display: flex;
+  height: 80px;
+  width: 100%;
+  background: #1b1b1b;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 65px 0 20px;
+  margin-top: 0;
+  flex-wrap: wrap;
+}
+nav .img {
+  margin-left: 60px;
+}
+
+nav .logo{
+  color: #fff;
+  margin-right: 10px;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 10px;
+}
+nav ul{
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin-left: auto;
+}
+nav ul li{
+  margin: 0 5px;
+}
+nav ul li a{
+  color: #f2f2f2;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+nav ul li a:hover{
+  color: #111;
+  background: #fff;
+}
+nav .menu-btn i{
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+}
+input[type="checkbox"]{
+  display: none;
+}
+
+/* Download Button Container */
+.download-button-container {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 30px 0 0;
+  z-index: 10;
+}
+
+/* Download Button Styles */
+.download-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.download-btn:hover {
+  transform: translateY(-3px);
+  background-color: #555;
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.download-btn i {
+  margin-right: 8px;
+}
+
+/* Bus Pass Specific Styles */
+.bus-pass-container {
+  max-width: 800px;
+  margin: 20px auto 40px; /* Reduced top margin to accommodate download button */
+  padding: 30px;
+  text-align: center;
+}
+
+.bus-pass-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.bus-pass {
+  background: url(../assets/college3.png);
+  background-size: cover; /* Ensures the image covers the entire container */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; 
+  width: 600px; /* Increased width for landscape orientation */
+  height: 320px;
+  padding: 20px;
+  border: 2px solid #000;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  color: black;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.bus-pass-details {
+  float: left;
+  text-align: left;
+  width: 50%;
+  height: 100%;
+  margin-left: 30px;
+}
+
+.bus-pass-details p {
+  margin: 10px 0;
+  color: black;
+}
+
+.bus-pass-details strong {
+  color: black;
+  font-weight: bold;
+}
+
+
+.student-photo {
+  width: 150px;  /* Keep width */
+  height: 170px; /* Increase height to make it rectangular */
+  border-radius: 10%; /* Remove rounded corners */
+  border: 3px solid black;
+  object-fit: cover; /* Ensures the image fills the area without distortion */
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.student-photo-container {
+  float: left;
+  width: 40%;
+  height: 100%;
+  padding: 10px;
+}
+
+.profile-container {
+    position: relative;
+    display: inline-block;
+}
+  
+.profile-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    margin-left: 20px;
+    margin-top: -8px;
+}
+  
+.profile-button i {
+    font-size: 17px;
+}
+  
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 140px; 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    padding: 4px 0; 
+}
+  
+.profile-container:hover .dropdown-content {
+    display: block;
+}
+  
+.dropdown-content a {
+    color: #333 !important;
+    padding: 8px 12px !important;
+    text-decoration: none;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px; 
+}
+  
+.dropdown-content a:hover {
+    background-color: rgb(212, 212, 212);
+}
+  
+.dropdown-content i {
+    width: 16px;
+    text-align: center;
+}
+  
+.dropdown-divider {
+    height: 1px;
+    background-color: #ddd;
+    margin: 4px 0;
+}
+  
+nav ul li.profile {
+    margin-left: auto;
+}
+
+/* Media query for responsive design */
+@media (max-width: 1000px){
+  nav{
+    padding: 0 40px 0 50px;
+  }
+}
+
+@media (max-width: 920px) {
+ nav .logo{
+    font-size: 9px;
+    max-width: 180px;
+ }
+
+  nav .menu-btn i{
+    display: block;
+  }
+  #click:checked ~ .menu-btn i:before{
+    content: "\f00d";
+  }
+  nav ul{
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    background: #111;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    display: block;
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+  }
+  #click:checked ~ ul{
+    left: 0;
+  }
+  nav ul li{
+    width: 100%;
+    margin: 40px 0;
+  }
+  nav ul li a{
+    width: 100%;
+    margin-left: -100%;
+    display: block;
+    font-size: 20px;
+    transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  #click:checked ~ ul li a{
+    margin-left: 0px;
+  }
+ 
+  nav ul li a:hover{
+    background: none;
+    color: cyan;
+  }
+
+  .profile-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .profile-button {
+    display: inline-flex;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 10px;
+  }
+  
+  .dropdown-content {
+    position: absolute;
+    display: none;
+    width: 140px;
+    left: 50%;
+    margin-top: -80px;
+    transform: translateX(-100%);
+    margin-left: -30px;
+    top: 100%;
+    background-color: #222;
+    border-radius: 4px;
+  }
+  
+  .profile-container:hover .dropdown-content,
+  .profile-button:focus + .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content a {
+    padding: 12px 16px !important;
+    text-align: left;
+    justify-content: flex-start;
+    color: #fff !important;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Responsive download button */
+  .download-button-container {
+    justify-content: center;
+    padding: 15px 0;
+  }
+}
+
+@media (max-width: 767px) {  
+  #img3 {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+  }
+  
+  #img3 img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .bus-pass-container {
+    padding: 15px;
+  }
+  
+  .bus-pass {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+  }
+  
+  .bus-pass-details, .student-photo-container {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+  
+  .student-photo-container {
+    padding: 10px 0;
+  }
+}

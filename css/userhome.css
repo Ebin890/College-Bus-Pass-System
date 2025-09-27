@@ -1,0 +1,823 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+} 
+nav{
+  display: flex;
+  height: 80px;
+  width: 100%;
+  background: #1b1b1b;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 65px 0 20px;
+  margin-top: 0;
+  flex-wrap: wrap;
+}
+nav .img {
+  margin-left: 60px;
+}
+
+nav .logo{
+  color: #fff;
+  margin-right: 10px;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 10px;
+}
+nav ul{
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin-left: auto;
+}
+nav ul li{
+  margin: 0 5px;
+}
+nav ul li a{
+  color: #f2f2f2;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+nav ul li a:hover{
+  color: #111;
+  background: #fff;
+}
+nav .menu-btn i{
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+}
+input[type="checkbox"]{
+  display: none;
+}
+@media (max-width: 1000px){
+  nav{
+    padding: 0 40px 0 50px;
+  }
+}
+@media (max-width: 920px) {
+
+ nav .logo{
+    font-size: 9px;
+    max-width: 180px;
+ }
+
+  nav .menu-btn i{
+    display: block;
+  }
+  #click:checked ~ .menu-btn i:before{
+    content: "\f00d";
+  }
+  nav ul{
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    background: #111;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  #click:checked ~ ul{
+    left: 0;
+  }
+  nav ul li{
+    width: 100%;
+    margin: 40px 0;
+  }
+  nav ul li a{
+    width: 100%;
+    margin-left: -100%;
+    display: block;
+    font-size: 20px;
+    transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  #click:checked ~ ul li a{
+    margin-left: 0px;
+  }
+ 
+  nav ul li a:hover{
+    background: none;
+    color: cyan;
+  }
+}
+.content{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: -1;
+  width: 100%;
+  padding: 0 30px;
+  color: #1b1b1b;
+}
+.content div{
+  font-size: 40px;
+  font-weight: 700;
+}
+
+
+.image-slider {
+  width: 100%;
+  height: 480px;
+  background-image: url(../assets/slider1.png);
+  background-size: cover;
+  background-position: center;
+  animation: slider 20s infinite;
+  z-index: 1;
+}
+
+
+
+@keyframes slider {
+  0%, 20% {
+      background-image: url(../assets/slider1.png);
+  }
+  21%, 40% {
+      background-image: url(../assets/slider2.png);
+  }
+  41%, 60% {
+      background-image: url(../assets/slider3.png);
+  }
+  61%, 80% {
+      background-image: url(../assets/slider4.png);
+  }
+  81%, 100% {
+      background-image: url(../assets/slider5.png);
+  }
+}
+
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: fade 10s infinite;
+}
+
+.slide:nth-child(1) { animation-delay: 0s; }
+.slide:nth-child(2) { animation-delay: 2s; }
+.slide:nth-child(3) { animation-delay: 4s; }
+.slide:nth-child(4) { animation-delay: 6s; }
+.slide:nth-child(5) { animation-delay: 8s; }
+
+@keyframes fade {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  20% { opacity: 1; }
+  30% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@media screen and (max-width: 768px) {
+  .image-slider,
+  .slider-container {
+    margin-top: 80px;
+    height: 320px;
+  }
+}
+
+
+ .profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin-left: 20px;
+  margin-top: -8px;
+}
+
+.profile-button i {
+  font-size: 17px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  min-width: 140px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 1000;
+  padding: 4px 0; 
+}
+
+.profile-container:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: #333 !important;
+  padding: 8px 12px !important;
+  text-decoration: none;
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px; 
+}
+
+.dropdown-content a:hover {
+  background-color: rgb(212, 212, 212);
+}
+
+.dropdown-content i {
+  width: 16px;
+  text-align: center;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 4px 0;
+}
+
+nav ul li.profile {
+  margin-left: auto;
+}
+
+@media (max-width: 940px) {
+  .profile-container {
+      width: 100%;
+  }
+  
+  .dropdown-content {
+      position: static;
+      width: 100%;
+      box-shadow: none;
+      background-color: transparent;
+  }
+
+  .dropdown-content a {
+      color: #fff !important;
+      padding: 12px 30px !important;
+      font-size: 14px;
+  }
+  .dropdown-content a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.container {
+  width: 500px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-left: 100px;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  
+}
+
+.title {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.container:hover .title {
+  color: #2196F3;
+}
+
+.text {
+  color: #666;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.container:hover .text {
+  color: #444;
+}
+
+
+
+.container1 {
+  width: 500px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-left: 100px;
+}
+
+.container1:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  
+}
+
+.title1 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.container1:hover .title1 {
+  color: #2196F3;
+}
+
+.text1 {
+  color: #666;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.container1:hover .text1 {
+  color: #444;
+}
+
+
+.container2 {
+  width: 500px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: -532px;
+  margin-left: 750px;
+
+}
+.container2:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  
+}
+
+.title2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.container2:hover .title2 {
+  color: #2196F3;
+}
+
+.text2 {
+  color: #666;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.container2:hover .text2 {
+  color: #444;
+}
+
+.container3 {
+  width: 500px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-left: 750px;
+
+}
+.container3:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+  
+}
+
+.title3 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+.container3:hover .title3 {
+  color: #2196F3;
+}
+
+.text3 {
+  color: #666;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.container3:hover .text3 {
+  color: #444;
+}
+
+
+/*.container4 {
+  width: 100%;
+  height: 150px;
+  margin-top: 75px;
+  background-color: #1b1b1b;;
+  border-radius: 0px;
+  bottom: 0;
+  justify-content: left;
+}*/
+
+.container4 {
+  width: 100%;
+  height: auto; /* Changed from fixed height to auto */
+  margin-top: 40px !important;
+  background-color: #1b1b1b;
+  border-radius: 0px;
+  bottom: 0;
+  padding: 30px 0; /* Added padding instead of fixed height */
+  position: relative;
+}
+
+.title4 {
+  color: white;
+  margin-left: 40px;
+  margin-top: -30px;
+}
+.text4 {
+  margin-left: 40px;
+  margin-top: 10px;
+  color: white;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+.title5 {
+  color: white;
+  margin-left: 1110px;
+  margin-top: -90px;
+}
+
+.socialIcons{
+  display: flex;
+  margin-top: 5px;
+  margin-left: 1095px;
+}
+.socialIcons a{
+  text-decoration: none;
+  padding:  10px;
+  background-color: white;
+  margin: 10px;
+  border-radius: 50%;
+  width: 43px; 
+  height: 43px; 
+}
+.socialIcons a i{
+  font-size: 24px;
+  color: black;
+  opacity: 0,9;
+}
+/* Hover affect on social media icon */
+.socialIcons a:hover{
+  background-color: #1b1b1b;
+  transition: 0.5s;
+}
+.socialIcons a:hover i{
+  color: white;
+  transition: 0.5s;
+}
+
+#ist{
+  margin-left: 1px;
+}
+
+#yt{
+  margin-left: -2px;
+}
+
+.title6 {
+  color: white;
+  margin-left: 510px;
+  margin-top: -115px;
+}
+
+.text6 {
+  margin-left: 510px;
+  margin-top: 10px;
+  color: white;
+}
+
+.title7 {
+  color: white;
+  margin-left: 780px;
+  margin-top: -115px;
+}
+
+.text7 {
+  margin-left: 780px;
+  margin-top: 10px;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  /* Improve footer layout for mobile */
+  .container4 {
+    height: auto;
+    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  
+  /* Reset all positioned elements in footer */
+  .title4, .text4, .title5, .title6, .text6, .title7, .text7 {
+    margin-left: 0;
+    margin-top: 0;
+    position: static;
+    width: 100%;
+  }
+  
+  /* Add proper spacing between sections */
+  .title4 {
+    margin-top: 0;
+  }
+  
+  .text4 {
+    margin-top: 10px;
+  }
+  
+  .title6 {
+    margin-top: 25px;
+  }
+  
+  .text6 {
+    margin-top: 10px;
+  }
+  
+  .title7 {
+    margin-top: 25px;
+  }
+  
+  .text7 {
+    margin-top: 10px;
+  }
+  
+  .title5 {
+    margin-top: 25px;
+  }
+
+  .container4 h3 {
+    margin-bottom: 10px; /* Reduce space after headings */
+  }
+  
+  /* Ensure text is properly aligned and spaced */
+  .container4 p {
+    margin-top: 5px;
+    margin-bottom: 15px; /* Add space after paragraphs */
+  }
+  
+  /* Specific fix for phone numbers */
+  h3:contains("PHONE") + p {
+    margin-top: 0; /* Remove extra space after PHONE heading */
+  }
+  
+  /* Fix social icons alignment */
+  .socialIcons {
+    margin-left: 0;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  /* Ensure social icon spacing is consistent */
+  .socialIcons a {
+    margin-left: 0;
+    margin-right: 10px;
+  }
+}
+
+
+
+
+
+/* Update responsive footer layout */
+@media (max-width: 768px) {
+  .container4 {
+    height: auto;
+    padding-bottom: 30px;
+  }
+  
+  .title4, .text4 {
+    text-align: left;
+    margin-left: 20px;
+  }
+  
+  .title6, .text6 {
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 20px; /* Space between sections */
+  }
+  
+  .title7, .text7 {
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 20px; /* Space between sections */
+  }
+  
+  .title5 {
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 20px; /* Space between sections */
+  }
+  
+  .socialIcons {
+    display: flex;
+    margin-top: 10px;
+    margin-left: 20px; /* Align with other content */
+    justify-content: flex-start;
+  }
+  
+  .socialIcons a {
+    margin-left: 0;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+    .container, .container1, .container2, .container3 {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    .container{
+      margin-top: 80px;
+    }
+    .container2, .container3 {
+        margin-top: 30px;
+    }
+
+    .image-slider {
+        height: 250px; /* Reduce slider height for smaller screens */
+    }
+
+    .container4 {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 768px) {
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    ul {
+        position: absolute;
+        top: 60px; /* Adjust based on your navbar height */
+        left: 0;
+        width: 100%;
+        background: black; /* Keep the background consistent */
+    }
+
+    .menu-btn {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile {
+        width: 100%;
+        text-align: center;
+        margin-top: 15px; /* Add space between Contact and Profile */
+    }
+
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .profile-button {
+        margin-top: 10px; /* Adjust spacing for better look */
+    }
+}
+
+@media (max-width: 920px) {
+    /* Keep your existing media query code */
+    
+    /* Position the profile container properly */
+    .profile-container {
+      position: relative; /* Change back to relative for positioning */
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin: 10px 0;
+    }
+    
+    /* Fix for the profile button */
+    .profile-button {
+      display: inline-flex;
+      justify-content: center;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    
+    /* Position the dropdown to the left */
+    .dropdown-content {
+      position: absolute;
+      display: none;
+      width: 140px;
+      left: 50%; /* Start at center */
+      margin-top:  -80px;;
+      transform: translateX(-100%); /* Move to left of center */
+      margin-left: -30px; /* Adjust this value to move it further left */
+      top: 100%;
+      background-color: #222;
+      border-radius: 4px;
+    }
+    
+    /* Show dropdown when hovering on mobile */
+    .profile-container:hover .dropdown-content,
+    .profile-button:focus + .dropdown-content {
+      display: block;
+    }
+    
+    /* Make dropdown items more touch-friendly */
+    .dropdown-content a {
+      padding: 12px 16px !important;
+      text-align: left;
+      justify-content: flex-start;
+    }
+}
+
+
+@media (max-width: 920px) {
+    nav .menu-btn i{
+      display: block;
+    }
+    #click:checked ~ .menu-btn i:before{
+      content: "\f00d";
+    }
+    nav ul{
+      position: fixed;
+      top: 80px;
+      left: -100%;
+      background: #111;
+      height: 100vh;
+      width: 100%;
+      text-align: center;
+      display: block;
+      transition: all 0.3s ease;
+      overflow-y: auto; /* Add scrollbar when content overflows */
+      max-height: calc(100vh - 80px); /* Limit height to viewport minus nav height */
+    }
+    #click:checked ~ ul{
+      left: 0;
+    }
+    /* Rest of your existing media query code... */
+  }

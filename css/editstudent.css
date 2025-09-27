@@ -1,0 +1,505 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+} 
+
+body{
+  background-image: url(../assets/college2.png);
+}
+
+
+nav{
+  display: flex;
+  height: 80px;
+  width: 100%;
+  background: #1b1b1b;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 65px 0 20px;
+  margin-top: 0;
+  flex-wrap: wrap;
+}
+nav .img {
+  margin-left: 60px;
+}
+
+nav .logo{
+  color: #fff;
+  margin-right: 10px;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 10px;
+}
+nav ul{
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin-left: auto;
+}
+nav ul li{
+  margin: 0 5px;
+}
+nav ul li a{
+  color: #f2f2f2;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 5px;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+nav ul li a:hover{
+  color: #111;
+  background: #fff;
+}
+nav .menu-btn i{
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+}
+input[type="checkbox"]{
+  display: none;
+}
+@media (max-width: 1000px){
+  nav{
+    padding: 0 40px 0 50px;
+  }
+}
+@media (max-width: 920px) {
+
+ nav .logo{
+    font-size: 9px;
+    max-width: 180px;
+ }
+
+  nav .menu-btn i{
+    display: block;
+  }
+  #click:checked ~ .menu-btn i:before{
+    content: "\f00d";
+  }
+  nav ul{
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    background: #111;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  #click:checked ~ ul{
+    left: 0;
+  }
+  nav ul li{
+    width: 100%;
+    margin: 40px 0;
+  }
+  nav ul li a{
+    width: 100%;
+    margin-left: -100%;
+    display: block;
+    font-size: 20px;
+    transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  #click:checked ~ ul li a{
+    margin-left: 0px;
+  }
+ 
+  nav ul li a:hover{
+    background: none;
+    color: cyan;
+  }
+}
+
+
+.content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: -1;
+    width: 100%;
+    padding: 0 30px;
+    color: #1b1b1b;
+  }
+  .content div{
+    font-size: 40px;
+    font-weight: 700;
+  }
+
+
+.profile-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .profile-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    margin-left: 20px;
+    margin-top: -8px;
+  }
+  
+  .profile-button i {
+    font-size: 17px;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 140px; 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    padding: 4px 0; 
+  }
+  
+  .profile-container:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content a {
+    color: #333 !important;
+    padding: 8px 12px !important;
+    text-decoration: none;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px; 
+  }
+  
+  .dropdown-content a:hover {
+    background-color: rgb(212, 212, 212);
+  }
+  
+  .dropdown-content i {
+    width: 16px;
+    text-align: center;
+  }
+  
+  .dropdown-divider {
+    height: 1px;
+    background-color: #ddd;
+    margin: 4px 0;
+  }
+  
+  nav ul li.profile {
+    margin-left: auto;
+  }
+  
+  @media (max-width: 940px) {
+    .profile-container {
+        width: 100%;
+    }
+    
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        background-color: transparent;
+    }
+  
+    .dropdown-content a {
+        color: #fff !important;
+        padding: 12px 30px !important;
+        font-size: 14px;
+    }
+    .dropdown-content a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    ul {
+        position: absolute;
+        top: 60px; /* Adjust based on your navbar height */
+        left: 0;
+        width: 100%;
+        background: black; /* Keep the background consistent */
+    }
+
+    .menu-btn {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile {
+        width: 100%;
+        text-align: center;
+        margin-top: 15px; /* Add space between Contact and Profile */
+    }
+
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .profile-button {
+        margin-top: 10px; /* Adjust spacing for better look */
+    }
+}
+
+@media (max-width: 920px) {
+    /* Keep your existing media query code */
+    
+    /* Position the profile container properly */
+    .profile-container {
+      position: relative; /* Change back to relative for positioning */
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin: 10px 0;
+    }
+    
+    /* Fix for the profile button */
+    .profile-button {
+      display: inline-flex;
+      justify-content: center;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    
+    /* Position the dropdown to the left */
+    .dropdown-content {
+      position: absolute;
+      display: none;
+      width: 140px;
+      left: 50%; /* Start at center */
+      margin-top:  -80px;;
+      transform: translateX(-100%); /* Move to left of center */
+      margin-left: -30px; /* Adjust this value to move it further left */
+      top: 100%;
+      background-color: #222;
+      border-radius: 4px;
+    }
+    
+    /* Show dropdown when hovering on mobile */
+    .profile-container:hover .dropdown-content,
+    .profile-button:focus + .dropdown-content {
+      display: block;
+    }
+    
+    /* Make dropdown items more touch-friendly */
+    .dropdown-content a {
+      padding: 12px 16px !important;
+      text-align: left;
+      justify-content: flex-start;
+    }
+}
+
+
+@media (max-width: 920px) {
+    nav .menu-btn i{
+      display: block;
+    }
+    #click:checked ~ .menu-btn i:before{
+      content: "\f00d";
+    }
+    nav ul{
+      position: fixed;
+      top: 80px;
+      left: -100%;
+      background: #111;
+      height: 100vh;
+      width: 100%;
+      text-align: center;
+      display: block;
+      transition: all 0.3s ease;
+      overflow-y: auto; /* Add scrollbar when content overflows */
+      max-height: calc(100vh - 80px); /* Limit height to viewport minus nav height */
+    }
+    #click:checked ~ ul{
+      left: 0;
+    }
+    /* Rest of your existing media query code... */
+  }
+
+  .container {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8); /* Light transparency */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Optional: adds a subtle white border */
+}
+
+h2 {
+  text-align: center;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+label {
+  display: block;
+  font-weight: bold;
+}
+
+input{
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+#s1{
+margin-top: 30px;
+}
+
+input#sid:disabled {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ccc;
+  opacity: 1;
+  cursor: not-allowed;
+  border: 1px solid black;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+
+#semester {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: -28px;
+  margin-left: 110px !important;
+  width: 50%;
+  height: 30px;
+}
+
+.svbtn { 
+  width: 100%;
+  padding: 10px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.svbtn:hover {
+  background: #555;
+}
+
+.gender-container {
+  
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+#g1{
+  margin-top: 32px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between radio button and label */
+}
+
+/* Align the entire gender options */
+.gender-options {
+  margin-top: -25px;
+  margin-left: 90px;
+  display: flex;
+  gap: 15px;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+      position: relative !important; /* Change from absolute to relative */
+      top: auto !important; /* Remove absolute positioning */
+      left: auto !important;
+      transform: none !important;
+      margin: 150px auto 30px !important; /* Top, horizontal(auto=center), bottom */
+      width: 90% !important;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .container {
+    width: 85%;
+    padding: 20px 15px;
+    margin-top: 100px;
+  }
+  
+  h2 {
+    font-size: 22px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .radio-item {
+    margin-top: -25px;
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between radio button and label */
+  }
+
+  .gender-options {
+    margin-top: 0px;
+    margin-left: 10px;
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+  
+  input, select, .svbtn {
+    font-size: 14px;
+  }
+}
+
+
+
+
